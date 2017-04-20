@@ -1,5 +1,5 @@
 
-# Joomla Manifest to MarkDown by AllEvents![](//marknotes.allevents3.com/docs/.images/allevents-hauteur.png)
+# Joomla Manifest to MarkDown by AllEvents![](http//marknotes.allevents3.com/docs/.images/allevents-hauteur.png)
 
 ![](https://img.shields.io/badge/AllEvents-v3.4-blue.svg)   ![](https://img.shields.io/badge/licence-GNU--GPL-green.svg)<br/><br/>
 
@@ -21,6 +21,6 @@ $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'agendas');
 ...
 ```
 
-For this time (20/04/2017) the program is (very) oriented to generate [AlLEvents](https://www.allevents3.com) documentation.
+For this time (20/04/2017) the program is (very) oriented to generate [AllEvents](https://www.allevents3.com) documentation.
 
 Any idea ? contact me :)
