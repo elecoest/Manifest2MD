@@ -23,4 +23,11 @@ $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'agendas');
 
 For this time (20/04/2017) the program is (very) oriented to generate [AllEvents](https://www.allevents3.com) documentation.
 
+
+the directories must be created before...
+
+> documentation/com_allevents/views
+> documentation/com_allevents/plugins
+> documentation/com_allevents/items
+
 Any idea ? contact me :)
