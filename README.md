@@ -27,7 +27,9 @@ For this time (20/04/2017) the program is (very) oriented to generate [AllEvents
 the directories must be created before...
 
 > documentation/com_allevents/views
+
 > documentation/com_allevents/plugins
+
 > documentation/com_allevents/items
 
 Any idea ? contact me :)
