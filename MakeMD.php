@@ -29,10 +29,12 @@ class AllEventsClassMD
         $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
 
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
-        $filename = JPATH_ROOT . '/marknotes/docs/AllEvents/objects/' . $object . '.md';
+        $filename = JPATH_ROOT . '/documentation/docs/AllEvents/items/' . $object . '.md';
         $handle = fopen($filename, 'w');
 
-        $sLine = '# AllEvents Object ' . $object . ' ![](//marknotes.allevents3.com/docs/.images/allevents-hauteur.png)';
+        $sLine = '# AllEvents Object ' . $object;
+        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+        $sLine = ' ![](//documentation.allevents3.com/docs/.images/allevents-hauteur.png)';
         fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
         $sLine = '![](https://img.shields.io/badge/AllEvents-v3.4-blue.svg) &nbsp; ![](https://img.shields.io/badge/licence-GNU--GPL-green.svg)<br/><br/>';
         fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
@@ -81,9 +83,9 @@ class AllEventsClassMD
                         }
                     }
                     if (isset($field['default'])) {
-                        $sLine = '| <i class="fa fa-check" style="color: #669900;"></i>&nbsp;' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . ' (default: `' . JText::_($field['default']) . '`)' . '|';
+                        $sLine = '| <i class="fa fa-check" style="color: #669900;"></i>&nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . ' (default: `' . JText::_($field['default']) . '`)' . '|';
                     } else {
-                        $sLine = '| <i class="fa fa-check" style="color: #669900;"></i>&nbsp;' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . '|';
+                        $sLine = '| <i class="fa fa-check" style="color: #669900;"></i>&nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . (empty($str) ? '&nbsp;' : $str) . '|';
                     }
                     fwrite($handle, $sLine . PHP_EOL);
                 }
@@ -107,10 +109,12 @@ class AllEventsClassMD
         $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
 
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
-        $filename = JPATH_ROOT . '/marknotes/docs/AllEvents/config_' . $extension . '.md';
+        $filename = JPATH_ROOT . '/documentation/docs/AllEvents/config_' . $extension . '.md';
         $handle = fopen($filename, 'w');
 
-        $sLine = '# AllEvents Component Configuration ![](//marknotes.allevents3.com/docs/.images/allevents-hauteur.png)';
+        $sLine = '# AllEvents Component Configuration';
+        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+        $sLine = '![](//documentation.allevents3.com/docs/.images/allevents-hauteur.png)';
         fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
         $sLine = '![](https://img.shields.io/badge/AllEvents-v3.4-blue.svg) &nbsp; ![](https://img.shields.io/badge/licence-GNU--GPL-green.svg)<br/><br/>';
         fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
@@ -188,10 +192,12 @@ class AllEventsClassMD
     public static function MakeMDExtension($extension = "com_allevents", $name = "allevents")
     {
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/' . $name . '.xml');
-        $filename = JPATH_ROOT . '/marknotes/docs/AllEvents/' . $extension . '.md';
+        $filename = JPATH_ROOT . '/documentation/docs/AllEvents/' . $extension . '.md';
         $handle = fopen($filename, 'w');
 
-        $sLine = '# AllEvents Component ![](//marknotes.allevents3.com/docs/.images/allevents-hauteur.png)';
+        $sLine = '# AllEvents Component';
+        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+        $sLine = '![](//documentation.allevents3.com/docs/.images/allevents-hauteur.png)';
         fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
         $sLine = '![](https://img.shields.io/badge/AllEvents-v3.4-blue.svg) &nbsp; ![](https://img.shields.io/badge/licence-GNU--GPL-green.svg)<br/><br/>';
         fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
@@ -219,7 +225,7 @@ class AllEventsClassMD
             }
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
 
-            $sLine = '<a class="btn btn-success" href="https://marknotes.allevents3.com/">Discover</a>';
+            $sLine = '<a class="btn btn-success" href="https://documentation.allevents3.com/">Discover</a>';
             $sLine .= '&nbsp;or [Live Demo](https://www.allevents3.com/en/demo/' . $module['module'] . ')';
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
         }
@@ -241,7 +247,7 @@ class AllEventsClassMD
             }
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
 
-            $sLine = '<a class="btn btn-success" href="https://marknotes.allevents3.com/">Discover</a>';
+            $sLine = '<a class="btn btn-success" href="https://documentation.allevents3.com/">Discover</a>';
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
         }
         $sLine = '<div class="end-examples"></div>';
@@ -308,21 +314,21 @@ class AllEventsClassMD
             if (empty($extension_name)) {
                 $extension_name = $extension;
             }
-            $filename = JPATH_ROOT . '/marknotes/docs/AllEvents/' . $path . '/' . JText::_($extension_name) . '.md';
+            $filename = JPATH_ROOT . '/documentation/docs/AllEvents/' . $path . '/' . JText::_($extension_name) . '.md';
         } elseif ($path == 'plugins') {
             $get_xml = simplexml_load_file(JPATH_ROOT . '/' . $path . '/' . $subpath . '/' . $extension . '/' . $extension . '.xml');
             $extension_name = $get_xml->name;
             if (empty($extension_name)) {
                 $extension_name = $extension;
             }
-            $filename = JPATH_ROOT . '/marknotes/docs/AllEvents/' . $path . '/' . JText::_($extension_name) . '.md';
+            $filename = JPATH_ROOT . '/documentation/docs/AllEvents/' . $path . '/' . JText::_($extension_name) . '.md';
         } elseif ($path == 'views') {
             $get_xml = simplexml_load_file(JPATH_ROOT . '/components/com_allevents/' . $path . '/' . $subpath . '/tmpl/' . $extension . '.xml');
             $extension_name = $get_xml->layout['title'];
             if (empty($extension_name)) {
                 $extension_name = $path . '_' . $subpath;
             }
-            $filename = JPATH_ROOT . '/marknotes/docs/AllEvents/' . $path . '/' . JText::_($extension_name) . '.md';
+            $filename = JPATH_ROOT . '/documentation/docs/AllEvents/' . $path . '/' . JText::_($extension_name) . '.md';
             $home = $get_xml;
             $get_xml = $get_xml->state;
         }
@@ -353,7 +359,8 @@ class AllEventsClassMD
             $handle = fopen($filename, 'w');
             // $sLine = '# ' . JText::_($extension_name) .' ('.JPATH_ROOT . '/' . $path . '/' . $subpath . '/' . $extension . '/' . $extension . '.xml)';
             $sLine = '# ' . JText::_($extension_name);
-            $sLine .= '[![](//marknotes.allevents3.com/docs/.images/allevents-hauteur.png)](http://marknotes.allevents3.com/docs/AllEvents/com_allevents.html)';
+            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            $sLine = '[![](//documentation.allevents3.com/docs/.images/allevents-hauteur.png)](http://documentation.allevents3.com/docs/AllEvents/com_allevents.html)';
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
             $sLine = '![](https://img.shields.io/badge/AllEvents-v3.4-blue.svg) &nbsp;![](https://img.shields.io/badge/licence-GNU--GPL-green.svg)<br/><br/>';
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
@@ -383,8 +390,14 @@ class AllEventsClassMD
             $description = str_replace($healthy, $yummy, $description);
             fwrite($handle, JText::_($description) . PHP_EOL . PHP_EOL);
 
-            $sLine = '![' . JText::_($extension_name) . '](../../.images/' . $extension . '_sample.png)';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            if ($path == 'modules') {
+                $sLine = '![' . JText::_($extension_name) . '](//documentation.allevents3.com/docs/.images/' . $extension . '_sample.png)';
+                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            } elseif ($path == 'plugins') {
+                //null
+            } elseif ($path == 'views') {
+                //null
+            }
 
             if (!empty($get_xml->aeunsupported)) {
                 $sLine = '<div class="alert alert-warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>' . JText::_($get_xml->aeunsupported) . '</div>';
@@ -429,7 +442,7 @@ class AllEventsClassMD
             }
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
 
-            $sLine = '**Step 1:** ![' . JText::_($extension_name) . '](../../.images/download.png) the extension to your local machine as a zip file package.';
+            $sLine = '**Step 1:** ![' . JText::_($extension_name) . '](//documentation.allevents3.com/docs/.images/download.png) the extension to your local machine as a zip file package.';
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
 
             $sLine = '**Step 2:** From the backend of your Joomla site (administration) select **Extensions >> Manager**, then Click the <b>Browse</b> button and select the extension package on your local machine. Then click the **Upload & Install** button to install module.';
@@ -468,8 +481,16 @@ class AllEventsClassMD
                 fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
             }
 
-            $sLine = '![Configure extension](../../.images/' . $extension . '_configuration.png)<br/>';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            if ($path == 'modules') {
+                $sLine = '![Configure module](//documentation.allevents3.com/docs/.images/' . $extension . '_configuration.png)<br/>';
+                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            } elseif ($path == 'plugins') {
+                $sLine = '![Configure plugin](//documentation.allevents3.com/docs/.images/' . $subpath . '_' . $extension . '_configuration.png)<br/>';
+                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            } elseif ($path == 'views') {
+                $sLine = '![Configure view](//documentation.allevents3.com/docs/.images/' . $extension . '_configuration.png)<br/>';
+                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            }
 
             if ($path == 'views') {
                 foreach ($home->state->fields->fieldset as $fieldset) {
