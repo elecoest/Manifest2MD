@@ -101,6 +101,17 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
     }
 
     /**
+     * Manifest2mdControllerMain::Discover()
+     *
+     */
+    function Discover()
+    {
+        $model = $this->getModel('extension');
+        $msg = $model->Discover();
+        $this->setRedirect('index.php?option=com_manifest2md', $msg);
+    }
+
+    /**
      * Manifest2mdControllerMain::MakeMD()
      *
      */
@@ -108,7 +119,6 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
     {
         require_once(JPATH_SITE . '/administrator/components/com_manifest2md/helpers/MakeMD.php');
         $g_se_MD = new AllEventsClassMD();
-        $msg = 'ca marchera';
 
         $model = $this->getModel('extensions');
         $items = $model->getComponentsConfig();

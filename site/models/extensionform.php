@@ -224,6 +224,62 @@ class Manifest2mdModelExtensionForm extends JModelForm
     }
 
     /**
+     * Method to get an ojbect.
+     *
+     * @param   integer $id The id of the object to get.
+     *
+     * @return Object|boolean Object on success, false on failure.
+     *
+     * @throws Exception
+     */
+    public function &getData($id = null)
+    {
+        if ($this->item === null) {
+            $this->item = false;
+
+            if (empty($id)) {
+                $id = $this->getState('extension.id');
+            }
+
+            // Get a level row instance.
+            $table = $this->getTable();
+
+            // Attempt to load the row.
+            if ($table !== false && $table->load($id)) {
+                $user = JFactory::getUser();
+                $id = $table->id;
+
+                if ($id) {
+                    $canEdit = $user->authorise('core.edit', 'com_manifest2md.extension.' . $id) || $user->authorise('core.create', 'com_manifest2md.extension.' . $id);
+                } else {
+                    $canEdit = $user->authorise('core.edit', 'com_manifest2md') || $user->authorise('core.create', 'com_manifest2md');
+                }
+
+                if (!$canEdit && $user->authorise('core.edit.own', 'com_manifest2md.extension.' . $id)) {
+                    $canEdit = $user->id == $table->created_by;
+                }
+
+                if (!$canEdit) {
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 500);
+                }
+
+                // Check published state.
+                if ($published = $this->getState('filter.published')) {
+                    if (isset($table->state) && $table->state != $published) {
+                        return $this->item;
+                    }
+                }
+
+                // Convert the JTable to a clean JObject.
+                $properties = $table->getProperties(1);
+                $this->item = ArrayHelper::toObject($properties, 'JObject');
+            }
+        }
+
+        return $this->item;
+    }
+
+    /**
      * Check if data can be saved
      *
      * @return bool
@@ -286,62 +342,6 @@ class Manifest2mdModelExtensionForm extends JModelForm
 
 
         return $data;
-    }
-
-    /**
-     * Method to get an ojbect.
-     *
-     * @param   integer $id The id of the object to get.
-     *
-     * @return Object|boolean Object on success, false on failure.
-     *
-     * @throws Exception
-     */
-    public function &getData($id = null)
-    {
-        if ($this->item === null) {
-            $this->item = false;
-
-            if (empty($id)) {
-                $id = $this->getState('extension.id');
-            }
-
-            // Get a level row instance.
-            $table = $this->getTable();
-
-            // Attempt to load the row.
-            if ($table !== false && $table->load($id)) {
-                $user = JFactory::getUser();
-                $id = $table->id;
-
-                if ($id) {
-                    $canEdit = $user->authorise('core.edit', 'com_manifest2md.extension.' . $id) || $user->authorise('core.create', 'com_manifest2md.extension.' . $id);
-                } else {
-                    $canEdit = $user->authorise('core.edit', 'com_manifest2md') || $user->authorise('core.create', 'com_manifest2md');
-                }
-
-                if (!$canEdit && $user->authorise('core.edit.own', 'com_manifest2md.extension.' . $id)) {
-                    $canEdit = $user->id == $table->created_by;
-                }
-
-                if (!$canEdit) {
-                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 500);
-                }
-
-                // Check published state.
-                if ($published = $this->getState('filter.published')) {
-                    if (isset($table->state) && $table->state != $published) {
-                        return $this->item;
-                    }
-                }
-
-                // Convert the JTable to a clean JObject.
-                $properties = $table->getProperties(1);
-                $this->item = ArrayHelper::toObject($properties, 'JObject');
-            }
-        }
-
-        return $this->item;
     }
 
 }

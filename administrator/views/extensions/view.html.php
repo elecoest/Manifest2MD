@@ -115,6 +115,7 @@ class Manifest2mdViewExtensions extends JViewLegacy
             }
         }
         JToolBarHelper::custom('extensions.makemd', 'cogs.png', 'cogs.png', 'JTOOLBAR_MAKEMD', false);
+        JToolBarHelper::custom('extensions.discover', 'cogs.png', 'cogs.png', 'JTOOLBAR_DISCOVER', false);
         if ($canDo->get('core.admin')) {
             JToolBarHelper::preferences('com_manifest2md');
         }

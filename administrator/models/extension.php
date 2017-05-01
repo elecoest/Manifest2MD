@@ -138,6 +138,46 @@ class Manifest2mdModelExtension extends JModelAdmin
     }
 
     /**
+     * Discover
+     *
+     * @return mixed Array of plugins on success, false on failure.
+     */
+    public function Discover()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+        $query->select("`name`,`type`,`element`,`folder`, `state`");
+        $query->from('`#__extensions` AS a');
+        $query->where("`type` in ('component','module','plugin')");
+
+
+        $db->setQuery("delete from #__manifest2md_extensions");
+		$db->execute();
+ 
+        $db->setQuery($query);
+        $loaddb = $db->loadObjectList();
+
+        $table = $this->getTable('extension');
+
+        foreach ((array )$loaddb as $item) {
+            $table->id = 0;
+            $table->state = $item->state;
+            $table->name = $item->name;
+            $table->type = $item->type;
+            $table->element = $item->element;
+            $table->folder = $item->folder;
+            $table->identifier = 'nc';
+            $table->doc_element = "config";
+            $table->specific_home = "";
+            $table->category = 1;
+            $table->check();
+            $table->store();
+        }
+
+        return $msg;
+    }
+
+    /**
      * Method to get the data that should be injected in the form.
      *
      * @return   mixed  The data for the form.
