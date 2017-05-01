@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter">
+        <field name="search" type="text" hint="COM_MANIFEST2MD_SEARCH_FILTER_SUBMIT"
+               label="COM_USERS_FILTER_SEARCH_DESC"
+               class="js-stools-search-string" />
+
+        <field name="type" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_TYPE" type="list" onchange="this.form.submit();">
+  <option value="">---</option>
+  <option value="component">COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_COMPONENT</option>
+  <option value="module">COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_MODULE</option>
+  <option value="plugin">COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_PLUGIN</option>
+</field>
+<field name="identifier" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_IDENTIFIER" type="list" onchange="this.form.submit();">
+  <option value="">---</option>
+  <option value="nc">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_NC</option>
+  <option value="both">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_BOTH</option>
+  <option value="site">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_SITE</option>
+  <option value="administrator">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_ADMINISTRATOR</option>
+</field>
+<field name="doc_element" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_DOC_ELEMENT" type="list" onchange="this.form.submit();">
+  <option value="">---</option>
+  <option value="all">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_ALL</option>
+  <option value="config">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_CONFIG</option>
+  <option value="Items">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_ITEMS</option>
+  <option value="Views">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_VIEWS</option>
+</field>
+<field name="category" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_CATEGORY" type="category" extension="com_manifest2md" show_root="1" onchange="this.form.submit();"/>
+
+
+    </fields>
+</form>

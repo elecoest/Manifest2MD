@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <fieldset>
+    <field name="id" type="text" readonly="true" class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC"/>
+    <field name="ordering"/>
+    <field name="state" default="1" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1">
+      <option value="1">JPUBLISHED</option>
+      <option value="0">JUNPUBLISHED</option>
+      <option value="2">JARCHIVED</option>
+      <option value="-2">JTRASHED</option>
+    </field>
+    <field name="checked_out" type="hidden" filter="unset"/>
+    <field name="checked_out_time" default="0000-00-00 00:00:00" type="hidden" filter="unset"/>
+    <field name="name" required="true" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_NAME" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_NAME" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_NAME"/>
+    <field name="type" default="component" type="list" required="true" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_TYPE" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_TYPE" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_TYPE">
+      <option value="component">COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_COMPONENT</option>
+      <option value="module">COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_MODULE</option>
+      <option value="plugin">COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_PLUGIN</option>
+    </field>
+    <field name="element" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_ELEMENT" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_ELEMENT" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_ELEMENT"/>
+    <field name="folder" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_FOLDER" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_FOLDER" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_FOLDER" showon="type:plugin"/>
+    <field name="identifier" default="nc" type="list" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_IDENTIFIER" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_IDENTIFIER" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_IDENTIFIER" showon="type:component,module">
+      <option value="nc">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_NC</option>
+      <option value="both">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_BOTH</option>
+      <option value="site">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_SITE</option>
+      <option value="administrator">COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_ADMINISTRATOR</option>
+    </field>
+    <field name="doc_element" default="config" type="list" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_DOC_ELEMENT" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_DOC_ELEMENT" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_DOC_ELEMENT" showon="type:component">
+      <option value="all">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_ALL</option>
+      <option value="config">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_CONFIG</option>
+      <option value="Items">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_ITEMS</option>
+      <option value="Views">COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_VIEWS</option>
+    </field>
+    <field name="specific_home" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_SPECIFIC_HOME" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_SPECIFIC_HOME" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_SPECIFIC_HOME" showon="doc_element:config,Items,Views"/>
+    <field name="category" type="category" extension="com_manifest2md" required="true" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_CATEGORY" description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_CATEGORY" hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_CATEGORY"/>
+    <field name="version_note" type="text" label="JGLOBAL_FIELD_VERSION_NOTE_LABEL" description="JGLOBAL_FIELD_VERSION_NOTE_DESC" class="inputbox" size="45" labelclass="control-label"/>
+  </fieldset>
+  <fieldset name="accesscontrol">
+    <field name="asset_id" type="hidden" filter="unset"/>
+    <field name="rules" type="rules" label="JFIELD_RULES_LABEL" translate_label="false" filter="rules" validate="rules" class="inputbox" component="com_manifest2md" section="extension"/>
+  </fieldset>
+</form>
