@@ -22,261 +22,243 @@ use Joomla\Utilities\ArrayHelper;
  */
 class Manifest2mdModelExtension extends JModelItem
 {
-	/**
-	 * Method to auto-populate the model state.
-	 *
-	 * Note. Calling getState in this method will result in recursion.
-	 *
-	 * @return void
-	 *
-	 * @since    1.6
-	 *
-	 */
-	protected function populateState()
-	{
-		$app  = JFactory::getApplication('com_manifest2md');
-		$user = JFactory::getUser();
+    /**
+     * Method to get an object.
+     *
+     * @param   integer $id The id of the object to get.
+     *
+     * @return  mixed    Object on success, false on failure.
+     */
+    public function &getData($id = null)
+    {
+        if ($this->_item === null) {
+            $this->_item = false;
 
-		// Check published state
-		if ((!$user->authorise('core.edit.state', 'com_manifest2md')) && (!$user->authorise('core.edit', 'com_manifest2md')))
-		{
-			$this->setState('filter.published', 1);
-			$this->setState('fileter.archived', 2);
-		}
+            if (empty($id)) {
+                $id = $this->getState('extension.id');
+            }
 
-		// Load state from the request userState on edit or from the passed variable on default
-		if (JFactory::getApplication()->input->get('layout') == 'edit')
-		{
-			$id = JFactory::getApplication()->getUserState('com_manifest2md.edit.extension.id');
-		}
-		else
-		{
-			$id = JFactory::getApplication()->input->get('id');
-			JFactory::getApplication()->setUserState('com_manifest2md.edit.extension.id', $id);
-		}
+            // Get a level row instance.
+            $table = $this->getTable();
 
-		$this->setState('extension.id', $id);
+            // Attempt to load the row.
+            if ($table->load($id)) {
+                // Check published state.
+                if ($published = $this->getState('filter.published')) {
+                    if (isset($table->state) && $table->state != $published) {
+                        throw new Exception(JText::_('COM_MANIFEST2MD_ITEM_NOT_LOADED'), 403);
+                    }
+                }
 
-		// Load the parameters.
-		$params       = $app->getParams();
-		$params_array = $params->toArray();
+                // Convert the JTable to a clean JObject.
+                $properties = $table->getProperties(1);
+                $this->_item = ArrayHelper::toObject($properties, 'JObject');
+            }
+        }
 
-		if (isset($params_array['item_id']))
-		{
-			$this->setState('extension.id', $params_array['item_id']);
-		}
+        if (isset($this->_item->created_by)) {
+            $this->_item->created_by_name = JFactory::getUser($this->_item->created_by)->name;
+        }
+        if (isset($this->_item->modified_by)) {
+            $this->_item->modified_by_name = JFactory::getUser($this->_item->modified_by)->name;
+        }
+        $this->_item->type = JText::_('COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_' . $this->_item->type);
+        $this->_item->identifier = JText::_('COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_' . $this->_item->identifier);
+        $this->_item->doc_element = JText::_('COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_' . $this->_item->doc_element);
 
-		$this->setState('params', $params);
-	}
+        return $this->_item;
+    }
 
-	/**
-	 * Method to get an object.
-	 *
-	 * @param   integer $id The id of the object to get.
-	 *
-	 * @return  mixed    Object on success, false on failure.
-	 */
-	public function &getData($id = null)
-	{
-		if ($this->_item === null)
-		{
-			$this->_item = false;
+    /**
+     * Get an instance of JTable class
+     *
+     * @param   string $type Name of the JTable class to get an instance of.
+     * @param   string $prefix Prefix for the table class name. Optional.
+     * @param   array $config Array of configuration values for the JTable object. Optional.
+     *
+     * @return  JTable|bool JTable if success, false on failure.
+     */
+    public function getTable($type = 'Extension', $prefix = 'Manifest2mdTable', $config = array())
+    {
+        $this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_manifest2md/tables');
 
-			if (empty($id))
-			{
-				$id = $this->getState('extension.id');
-			}
+        return JTable::getInstance($type, $prefix, $config);
+    }
 
-			// Get a level row instance.
-			$table = $this->getTable();
+    /**
+     * Get the id of an item by alias
+     *
+     * @param   string $alias Item alias
+     *
+     * @return  mixed
+     */
+    public function getItemIdByAlias($alias)
+    {
+        $table = $this->getTable();
+        $properties = $table->getProperties();
 
-			// Attempt to load the row.
-			if ($table->load($id))
-			{
-				// Check published state.
-				if ($published = $this->getState('filter.published'))
-				{
-					if (isset($table->state) && $table->state != $published)
-					{
-						throw new Exception(JText::_('COM_MANIFEST2MD_ITEM_NOT_LOADED'), 403);
-					}
-				}
+        if (!in_array('alias', $properties)) {
+            return null;
+        }
 
-				// Convert the JTable to a clean JObject.
-				$properties  = $table->getProperties(1);
-				$this->_item = ArrayHelper::toObject($properties, 'JObject');
-			}
-		}
+        $table->load(array('alias' => $alias));
 
-		if (isset($this->_item->created_by) )
-		{
-			$this->_item->created_by_name = JFactory::getUser($this->_item->created_by)->name;
-		}if (isset($this->_item->modified_by) )
-		{
-			$this->_item->modified_by_name = JFactory::getUser($this->_item->modified_by)->name;
-		}
-					$this->_item->type = JText::_('COM_MANIFEST2MD_EXTENSIONS_TYPE_OPTION_' . $this->_item->type);
-					$this->_item->identifier = JText::_('COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER_OPTION_' . $this->_item->identifier);
-					$this->_item->doc_element = JText::_('COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT_OPTION_' . $this->_item->doc_element);
+        return $table->id;
+    }
 
-		return $this->_item;
-	}
+    /**
+     * Method to check in an item.
+     *
+     * @param   integer $id The id of the row to check out.
+     *
+     * @return  boolean True on success, false on failure.
+     *
+     * @since    1.6
+     */
+    public function checkin($id = null)
+    {
+        // Get the id.
+        $id = (!empty($id)) ? $id : (int)$this->getState('extension.id');
 
-	/**
-	 * Get an instance of JTable class
-	 *
-	 * @param   string $type   Name of the JTable class to get an instance of.
-	 * @param   string $prefix Prefix for the table class name. Optional.
-	 * @param   array  $config Array of configuration values for the JTable object. Optional.
-	 *
-	 * @return  JTable|bool JTable if success, false on failure.
-	 */
-	public function getTable($type = 'Extension', $prefix = 'Manifest2mdTable', $config = array())
-	{
-		$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_manifest2md/tables');
+        if ($id) {
+            // Initialise the table
+            $table = $this->getTable();
 
-		return JTable::getInstance($type, $prefix, $config);
-	}
+            // Attempt to check the row in.
+            if (method_exists($table, 'checkin')) {
+                if (!$table->checkin($id)) {
+                    return false;
+                }
+            }
+        }
 
-	/**
-	 * Get the id of an item by alias
-	 *
-	 * @param   string $alias Item alias
-	 *
-	 * @return  mixed
-	 */
-	public function getItemIdByAlias($alias)
-	{
-		$table      = $this->getTable();
-		$properties = $table->getProperties();
+        return true;
+    }
 
-		if (!in_array('alias', $properties))
-		{
-			return null;
-		}
+    /**
+     * Method to check out an item for editing.
+     *
+     * @param   integer $id The id of the row to check out.
+     *
+     * @return  boolean True on success, false on failure.
+     *
+     * @since    1.6
+     */
+    public function checkout($id = null)
+    {
+        // Get the user id.
+        $id = (!empty($id)) ? $id : (int)$this->getState('extension.id');
 
-		$table->load(array('alias' => $alias));
+        if ($id) {
+            // Initialise the table
+            $table = $this->getTable();
 
-		return $table->id;
-	}
+            // Get the current user object.
+            $user = JFactory::getUser();
 
-	/**
-	 * Method to check in an item.
-	 *
-	 * @param   integer $id The id of the row to check out.
-	 *
-	 * @return  boolean True on success, false on failure.
-	 *
-	 * @since    1.6
-	 */
-	public function checkin($id = null)
-	{
-		// Get the id.
-		$id = (!empty($id)) ? $id : (int) $this->getState('extension.id');
+            // Attempt to check the row out.
+            if (method_exists($table, 'checkout')) {
+                if (!$table->checkout($user->get('id'), $id)) {
+                    return false;
+                }
+            }
+        }
 
-		if ($id)
-		{
-			// Initialise the table
-			$table = $this->getTable();
+        return true;
+    }
 
-			// Attempt to check the row in.
-			if (method_exists($table, 'checkin'))
-			{
-				if (!$table->checkin($id))
-				{
-					return false;
-				}
-			}
-		}
+    /**
+     * Get the name of a category by id
+     *
+     * @param   int $id Category id
+     *
+     * @return  Object|null    Object if success, null in case of failure
+     */
+    public function getCategoryName($id)
+    {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query
+            ->select('title')
+            ->from('#__categories')
+            ->where('id = ' . $id);
+        $db->setQuery($query);
 
-		return true;
-	}
+        return $db->loadObject();
+    }
 
-	/**
-	 * Method to check out an item for editing.
-	 *
-	 * @param   integer $id The id of the row to check out.
-	 *
-	 * @return  boolean True on success, false on failure.
-	 *
-	 * @since    1.6
-	 */
-	public function checkout($id = null)
-	{
-		// Get the user id.
-		$id = (!empty($id)) ? $id : (int) $this->getState('extension.id');
+    /**
+     * Publish the element
+     *
+     * @param   int $id Item id
+     * @param   int $state Publish state
+     *
+     * @return  boolean
+     */
+    public function publish($id, $state)
+    {
+        $table = $this->getTable();
+        $table->load($id);
+        $table->state = $state;
 
-		if ($id)
-		{
-			// Initialise the table
-			$table = $this->getTable();
+        return $table->store();
+    }
 
-			// Get the current user object.
-			$user = JFactory::getUser();
+    /**
+     * Method to delete an item
+     *
+     * @param   int $id Element id
+     *
+     * @return  bool
+     */
+    public function delete($id)
+    {
+        $table = $this->getTable();
 
-			// Attempt to check the row out.
-			if (method_exists($table, 'checkout'))
-			{
-				if (!$table->checkout($user->get('id'), $id))
-				{
-					return false;
-				}
-			}
-		}
+        return $table->delete($id);
+    }
 
-		return true;
-	}
+    /**
+     * Method to auto-populate the model state.
+     *
+     * Note. Calling getState in this method will result in recursion.
+     *
+     * @return void
+     *
+     * @since    1.6
+     *
+     */
+    protected function populateState()
+    {
+        $app = JFactory::getApplication('com_manifest2md');
+        $user = JFactory::getUser();
 
-	/**
-	 * Get the name of a category by id
-	 *
-	 * @param   int $id Category id
-	 *
-	 * @return  Object|null    Object if success, null in case of failure
-	 */
-	public function getCategoryName($id)
-	{
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
-		$query
-			->select('title')
-			->from('#__categories')
-			->where('id = ' . $id);
-		$db->setQuery($query);
+        // Check published state
+        if ((!$user->authorise('core.edit.state', 'com_manifest2md')) && (!$user->authorise('core.edit', 'com_manifest2md'))) {
+            $this->setState('filter.published', 1);
+            $this->setState('fileter.archived', 2);
+        }
 
-		return $db->loadObject();
-	}
+        // Load state from the request userState on edit or from the passed variable on default
+        if (JFactory::getApplication()->input->get('layout') == 'edit') {
+            $id = JFactory::getApplication()->getUserState('com_manifest2md.edit.extension.id');
+        } else {
+            $id = JFactory::getApplication()->input->get('id');
+            JFactory::getApplication()->setUserState('com_manifest2md.edit.extension.id', $id);
+        }
 
-	/**
-	 * Publish the element
-	 *
-	 * @param   int $id    Item id
-	 * @param   int $state Publish state
-	 *
-	 * @return  boolean
-	 */
-	public function publish($id, $state)
-	{
-		$table = $this->getTable();
-		$table->load($id);
-		$table->state = $state;
+        $this->setState('extension.id', $id);
 
-		return $table->store();
-	}
+        // Load the parameters.
+        $params = $app->getParams();
+        $params_array = $params->toArray();
 
-	/**
-	 * Method to delete an item
-	 *
-	 * @param   int $id Element id
-	 *
-	 * @return  bool
-	 */
-	public function delete($id)
-	{
-		$table = $this->getTable();
+        if (isset($params_array['item_id'])) {
+            $this->setState('extension.id', $params_array['item_id']);
+        }
 
-		return $table->delete($id);
-	}
+        $this->setState('params', $params);
+    }
 
-	
+
 }

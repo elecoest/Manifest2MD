@@ -11,6 +11,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\Utilities\ArrayHelper;
+
 /**
  * extension Table class
  *
@@ -18,268 +19,245 @@ use Joomla\Utilities\ArrayHelper;
  */
 class Manifest2mdTableextension extends JTable
 {
-	
-	/**
-	 * Constructor
-	 *
-	 * @param   JDatabase  &$db  A database connector object
-	 */
-	public function __construct(&$db)
-	{
-		JObserverMapper::addObserverClassToClass('JTableObserverContenthistory', 'Manifest2mdTableextension', array('typeAlias' => 'com_manifest2md.extension'));
-		parent::__construct('#__manifest2md_extensions', 'id', $db);
-	}
 
-	/**
-	 * Overloaded bind function to pre-process the params.
-	 *
-	 * @param   array  $array   Named array
-	 * @param   mixed  $ignore  Optional array or list of parameters to ignore
-	 *
-	 * @return  null|string  null is operation was satisfactory, otherwise returns an error
-	 *
-	 * @see     JTable:bind
-	 * @since   1.5
-	 */
-	public function bind($array, $ignore = '')
-	{
-		$input = JFactory::getApplication()->input;
-		$task = $input->getString('task', '');
+    /**
+     * Constructor
+     *
+     * @param   JDatabase &$db A database connector object
+     */
+    public function __construct(&$db)
+    {
+        JObserverMapper::addObserverClassToClass('JTableObserverContenthistory', 'Manifest2mdTableextension', array('typeAlias' => 'com_manifest2md.extension'));
+        parent::__construct('#__manifest2md_extensions', 'id', $db);
+    }
 
-		if ($array['id'] == 0 && empty($array['created_by']))
-		{
-			$array['created_by'] = JFactory::getUser()->id;
-		}
+    /**
+     * Overloaded bind function to pre-process the params.
+     *
+     * @param   array $array Named array
+     * @param   mixed $ignore Optional array or list of parameters to ignore
+     *
+     * @return  null|string  null is operation was satisfactory, otherwise returns an error
+     *
+     * @see     JTable:bind
+     * @since   1.5
+     */
+    public function bind($array, $ignore = '')
+    {
+        $input = JFactory::getApplication()->input;
+        $task = $input->getString('task', '');
 
-		if ($array['id'] == 0 && empty($array['modified_by']))
-		{
-			$array['modified_by'] = JFactory::getUser()->id;
-		}
+        if ($array['id'] == 0 && empty($array['created_by'])) {
+            $array['created_by'] = JFactory::getUser()->id;
+        }
 
-		if (isset($array['params']) && is_array($array['params']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($array['params']);
-			$array['params'] = (string) $registry;
-		}
+        if ($array['id'] == 0 && empty($array['modified_by'])) {
+            $array['modified_by'] = JFactory::getUser()->id;
+        }
 
-		if (isset($array['metadata']) && is_array($array['metadata']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($array['metadata']);
-			$array['metadata'] = (string) $registry;
-		}
+        if (isset($array['params']) && is_array($array['params'])) {
+            $registry = new JRegistry;
+            $registry->loadArray($array['params']);
+            $array['params'] = (string)$registry;
+        }
 
-		if (!JFactory::getUser()->authorise('core.admin', 'com_manifest2md.extension.' . $array['id']))
-		{
-			$actions         = JAccess::getActionsFromFile(
-				JPATH_ADMINISTRATOR . '/components/com_manifest2md/access.xml',
-				"/access/section[@name='extension']/"
-			);
-			$default_actions = JAccess::getAssetRules('com_manifest2md.extension.' . $array['id'])->getData();
-			$array_jaccess   = array();
+        if (isset($array['metadata']) && is_array($array['metadata'])) {
+            $registry = new JRegistry;
+            $registry->loadArray($array['metadata']);
+            $array['metadata'] = (string)$registry;
+        }
 
-			foreach ($actions as $action)
-			{
-				$array_jaccess[$action->name] = $default_actions[$action->name];
-			}
+        if (!JFactory::getUser()->authorise('core.admin', 'com_manifest2md.extension.' . $array['id'])) {
+            $actions = JAccess::getActionsFromFile(
+                JPATH_ADMINISTRATOR . '/components/com_manifest2md/access.xml',
+                "/access/section[@name='extension']/"
+            );
+            $default_actions = JAccess::getAssetRules('com_manifest2md.extension.' . $array['id'])->getData();
+            $array_jaccess = array();
 
-			$array['rules'] = $this->JAccessRulestoArray($array_jaccess);
-		}
+            foreach ($actions as $action) {
+                $array_jaccess[$action->name] = $default_actions[$action->name];
+            }
 
-		// Bind the rules for ACL where supported.
-		if (isset($array['rules']) && is_array($array['rules']))
-		{
-			$this->setRules($array['rules']);
-		}
+            $array['rules'] = $this->JAccessRulestoArray($array_jaccess);
+        }
 
-		return parent::bind($array, $ignore);
-	}
+        // Bind the rules for ACL where supported.
+        if (isset($array['rules']) && is_array($array['rules'])) {
+            $this->setRules($array['rules']);
+        }
 
-	/**
-	 * This function convert an array of JAccessRule objects into an rules array.
-	 *
-	 * @param   array  $jaccessrules  An array of JAccessRule objects.
-	 *
-	 * @return  array
-	 */
-	private function JAccessRulestoArray($jaccessrules)
-	{
-		$rules = array();
+        return parent::bind($array, $ignore);
+    }
 
-		foreach ($jaccessrules as $action => $jaccess)
-		{
-			$actions = array();
+    /**
+     * This function convert an array of JAccessRule objects into an rules array.
+     *
+     * @param   array $jaccessrules An array of JAccessRule objects.
+     *
+     * @return  array
+     */
+    private function JAccessRulestoArray($jaccessrules)
+    {
+        $rules = array();
 
-			if ($jaccess)
-			{
-				foreach ($jaccess->getData() as $group => $allow)
-				{
-					$actions[$group] = ((bool)$allow);
-				}
-			}
+        foreach ($jaccessrules as $action => $jaccess) {
+            $actions = array();
 
-			$rules[$action] = $actions;
-		}
+            if ($jaccess) {
+                foreach ($jaccess->getData() as $group => $allow) {
+                    $actions[$group] = ((bool)$allow);
+                }
+            }
 
-		return $rules;
-	}
+            $rules[$action] = $actions;
+        }
 
-	/**
-	 * Overloaded check function
-	 *
-	 * @return bool
-	 */
-	public function check()
-	{
-		// If there is an ordering column and this is a new row then get the next ordering value
-		if (property_exists($this, 'ordering') && $this->id == 0)
-		{
-			$this->ordering = self::getNextOrder();
-		}
-		
-		
+        return $rules;
+    }
 
-		return parent::check();
-	}
+    /**
+     * Overloaded check function
+     *
+     * @return bool
+     */
+    public function check()
+    {
+        // If there is an ordering column and this is a new row then get the next ordering value
+        if (property_exists($this, 'ordering') && $this->id == 0) {
+            $this->ordering = self::getNextOrder();
+        }
 
-	/**
-	 * Method to set the publishing state for a row or list of rows in the database
-	 * table.  The method respects checked out rows by other users and will attempt
-	 * to checkin rows that it can after adjustments are made.
-	 *
-	 * @param   mixed    $pks     An optional array of primary key values to update.  If not
-	 *                            set the instance property value is used.
-	 * @param   integer  $state   The publishing state. eg. [0 = unpublished, 1 = published]
-	 * @param   integer  $userId  The user id of the user performing the operation.
-	 *
-	 * @return   boolean  True on success.
-	 *
-	 * @since    1.0.4
-	 *
-	 * @throws Exception
-	 */
-	public function publish($pks = null, $state = 1, $userId = 0)
-	{
-		// Initialise variables.
-		$k = $this->_tbl_key;
 
-		// Sanitize input.
-		ArrayHelper::toInteger($pks);
-		$userId = (int) $userId;
-		$state  = (int) $state;
+        return parent::check();
+    }
 
-		// If there are no primary keys set check to see if the instance key is set.
-		if (empty($pks))
-		{
-			if ($this->$k)
-			{
-				$pks = array($this->$k);
-			}
-			// Nothing to set publishing state on, return false.
-			else
-			{
-				throw new Exception(500, JText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
-			}
-		}
+    /**
+     * Method to set the publishing state for a row or list of rows in the database
+     * table.  The method respects checked out rows by other users and will attempt
+     * to checkin rows that it can after adjustments are made.
+     *
+     * @param   mixed $pks An optional array of primary key values to update.  If not
+     *                            set the instance property value is used.
+     * @param   integer $state The publishing state. eg. [0 = unpublished, 1 = published]
+     * @param   integer $userId The user id of the user performing the operation.
+     *
+     * @return   boolean  True on success.
+     *
+     * @since    1.0.4
+     *
+     * @throws Exception
+     */
+    public function publish($pks = null, $state = 1, $userId = 0)
+    {
+        // Initialise variables.
+        $k = $this->_tbl_key;
 
-		// Build the WHERE clause for the primary keys.
-		$where = $k . '=' . implode(' OR ' . $k . '=', $pks);
+        // Sanitize input.
+        ArrayHelper::toInteger($pks);
+        $userId = (int)$userId;
+        $state = (int)$state;
 
-		// Determine if there is checkin support for the table.
-		if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time'))
-		{
-			$checkin = '';
-		}
-		else
-		{
-			$checkin = ' AND (checked_out = 0 OR checked_out = ' . (int) $userId . ')';
-		}
+        // If there are no primary keys set check to see if the instance key is set.
+        if (empty($pks)) {
+            if ($this->$k) {
+                $pks = array($this->$k);
+            } // Nothing to set publishing state on, return false.
+            else {
+                throw new Exception(500, JText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
+            }
+        }
 
-		// Update the publishing state for rows with the given primary keys.
-		$this->_db->setQuery(
-			'UPDATE `' . $this->_tbl . '`' .
-			' SET `state` = ' . (int) $state .
-			' WHERE (' . $where . ')' .
-			$checkin
-		);
-		$this->_db->execute();
+        // Build the WHERE clause for the primary keys.
+        $where = $k . '=' . implode(' OR ' . $k . '=', $pks);
 
-		// If checkin is supported and all rows were adjusted, check them in.
-		if ($checkin && (count($pks) == $this->_db->getAffectedRows()))
-		{
-			// Checkin each row.
-			foreach ($pks as $pk)
-			{
-				$this->checkin($pk);
-			}
-		}
+        // Determine if there is checkin support for the table.
+        if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time')) {
+            $checkin = '';
+        } else {
+            $checkin = ' AND (checked_out = 0 OR checked_out = ' . (int)$userId . ')';
+        }
 
-		// If the JTable instance value is in the list of primary keys that were set, set the instance.
-		if (in_array($this->$k, $pks))
-		{
-			$this->state = $state;
-		}
+        // Update the publishing state for rows with the given primary keys.
+        $this->_db->setQuery(
+            'UPDATE `' . $this->_tbl . '`' .
+            ' SET `state` = ' . (int)$state .
+            ' WHERE (' . $where . ')' .
+            $checkin
+        );
+        $this->_db->execute();
 
-		return true;
-	}
+        // If checkin is supported and all rows were adjusted, check them in.
+        if ($checkin && (count($pks) == $this->_db->getAffectedRows())) {
+            // Checkin each row.
+            foreach ($pks as $pk) {
+                $this->checkin($pk);
+            }
+        }
 
-	/**
-	 * Define a namespaced asset name for inclusion in the #__assets table
-	 *
-	 * @return string The asset name
-	 *
-	 * @see JTable::_getAssetName
-	 */
-	protected function _getAssetName()
-	{
-		$k = $this->_tbl_key;
+        // If the JTable instance value is in the list of primary keys that were set, set the instance.
+        if (in_array($this->$k, $pks)) {
+            $this->state = $state;
+        }
 
-		return 'com_manifest2md.extension.' . (int) $this->$k;
-	}
+        return true;
+    }
 
-	/**
-	 * Returns the parent asset's id. If you have a tree structure, retrieve the parent's id using the external key field
-	 *
-	 * @param   JTable   $table  Table name
-	 * @param   integer  $id     Id
-	 *
-	 * @see JTable::_getAssetParentId
-	 *
-	 * @return mixed The id on success, false on failure.
-	 */
-	protected function _getAssetParentId(JTable $table = null, $id = null)
-	{
-		// We will retrieve the parent-asset from the Asset-table
-		$assetParent = JTable::getInstance('Asset');
+    /**
+     * Delete a record by id
+     *
+     * @param   mixed $pk Primary key value to delete. Optional
+     *
+     * @return bool
+     */
+    public function delete($pk = null)
+    {
+        $this->load($pk);
+        $result = parent::delete($pk);
 
-		// Default: if no asset-parent can be found we take the global asset
-		$assetParentId = $assetParent->getRootId();
+        return $result;
+    }
 
-		// The item has the component as asset-parent
-		$assetParent->loadByName('com_manifest2md');
+    /**
+     * Define a namespaced asset name for inclusion in the #__assets table
+     *
+     * @return string The asset name
+     *
+     * @see JTable::_getAssetName
+     */
+    protected function _getAssetName()
+    {
+        $k = $this->_tbl_key;
 
-		// Return the found asset-parent-id
-		if ($assetParent->id)
-		{
-			$assetParentId = $assetParent->id;
-		}
+        return 'com_manifest2md.extension.' . (int)$this->$k;
+    }
 
-		return $assetParentId;
-	}
+    /**
+     * Returns the parent asset's id. If you have a tree structure, retrieve the parent's id using the external key field
+     *
+     * @param   JTable $table Table name
+     * @param   integer $id Id
+     *
+     * @see JTable::_getAssetParentId
+     *
+     * @return mixed The id on success, false on failure.
+     */
+    protected function _getAssetParentId(JTable $table = null, $id = null)
+    {
+        // We will retrieve the parent-asset from the Asset-table
+        $assetParent = JTable::getInstance('Asset');
 
-	/**
-	 * Delete a record by id
-	 *
-	 * @param   mixed  $pk  Primary key value to delete. Optional
-	 *
-	 * @return bool
-	 */
-	public function delete($pk = null)
-	{
-		$this->load($pk);
-		$result = parent::delete($pk);
-		
-		return $result;
-	}
+        // Default: if no asset-parent can be found we take the global asset
+        $assetParentId = $assetParent->getRootId();
+
+        // The item has the component as asset-parent
+        $assetParent->loadByName('com_manifest2md');
+
+        // Return the found asset-parent-id
+        if ($assetParent->id) {
+            $assetParentId = $assetParent->id;
+        }
+
+        return $assetParentId;
+    }
 }

@@ -109,7 +109,7 @@ class AllEventsClassMD
         $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
 
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
-        $filename = JPATH_ROOT . '/documentation/docs/'.$category.'config_' . $extension . '.md';
+        $filename = JPATH_ROOT . '/documentation/docs/' . $category . 'config_' . $extension . '.md';
         $handle = fopen($filename, 'w');
 
         $sLine = '# Component Configuration';
@@ -294,21 +294,21 @@ class AllEventsClassMD
             if (empty($extension_name)) {
                 $extension_name = $extension;
             }
-            $filename = JPATH_ROOT . '/documentation/docs/'.$category.'/' . $path . '/' . JText::_($extension_name) . '.md';
+            $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/' . $path . '/' . JText::_($extension_name) . '.md';
         } elseif ($path == 'plugins') {
             $get_xml = simplexml_load_file(JPATH_ROOT . '/' . $path . '/' . $subpath . '/' . $extension . '/' . $extension . '.xml');
             $extension_name = $get_xml->name;
             if (empty($extension_name)) {
                 $extension_name = $extension;
             }
-            $filename = JPATH_ROOT . '/documentation/docs/'.$category.'/' . $path . '/' . JText::_($extension_name) . '.md';
+            $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/' . $path . '/' . JText::_($extension_name) . '.md';
         } elseif ($path == 'views') {
-            $get_xml = simplexml_load_file(JPATH_ROOT . '/components/'.$extension.'/' . $path . '/' . $subpath . '/tmpl/' . $extension . '.xml');
+            $get_xml = simplexml_load_file(JPATH_ROOT . '/components/' . $extension . '/' . $path . '/' . $subpath . '/tmpl/' . $extension . '.xml');
             $extension_name = $get_xml->layout['title'];
             if (empty($extension_name)) {
                 $extension_name = $path . '_' . $subpath;
             }
-            $filename = JPATH_ROOT . '/documentation/docs/'.$category.'/' . $path . '/' . JText::_($extension_name) . '.md';
+            $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/' . $path . '/' . JText::_($extension_name) . '.md';
             $home = $get_xml;
             $get_xml = $get_xml->state;
         }
@@ -503,7 +503,7 @@ class AllEventsClassMD
             }
             $sLine = ' <br/>';
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-           
+
             $sLine = '## Frequently Asked Questions';
             fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
             if (empty($get_xml->aeunsupported)) {

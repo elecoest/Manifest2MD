@@ -17,21 +17,21 @@ defined('_JEXEC') or die;
  */
 class Manifest2mdControllerExtensions extends Manifest2mdController
 {
-	/**
-	 * Proxy for getModel.
-	 *
-	 * @param   string  $name    The model name. Optional.
-	 * @param   string  $prefix  The class prefix. Optional
-	 * @param   array   $config  Configuration array for model. Optional
-	 *
-	 * @return object	The model
-	 *
-	 * @since	1.6
-	 */
-	public function &getModel($name = 'Extensions', $prefix = 'Manifest2mdModel', $config = array())
-	{
-		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+    /**
+     * Proxy for getModel.
+     *
+     * @param   string $name The model name. Optional.
+     * @param   string $prefix The class prefix. Optional
+     * @param   array $config Configuration array for model. Optional
+     *
+     * @return object    The model
+     *
+     * @since    1.6
+     */
+    public function &getModel($name = 'Extensions', $prefix = 'Manifest2mdModel', $config = array())
+    {
+        $model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
-		return $model;
-	}
+        return $model;
+    }
 }

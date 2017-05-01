@@ -11,9 +11,8 @@
 defined('_JEXEC') or die;
 
 // Access check.
-if (!JFactory::getUser()->authorise('core.manage', 'com_manifest2md'))
-{
-	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
+if (!JFactory::getUser()->authorise('core.manage', 'com_manifest2md')) {
+    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
 // Include dependancies

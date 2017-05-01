@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 JLoader::register('ContentHelper', JPATH_ADMINISTRATOR . '/components/com_content/helpers/content.php');
 JLoader::register('CategoryHelperAssociation', JPATH_ADMINISTRATOR . '/components/com_categories/helpers/association.php');
+
 /**
  * Content Component Association Helper.
  *
@@ -22,8 +23,8 @@ class Manifest2mdHelperAssociation extends CategoryHelperAssociation
     /**
      * Method to get the associations for a given item
      *
-     * @param   integer  $id    Id of the item
-     * @param   string   $view  Name of the view
+     * @param   integer $id Id of the item
+     * @param   string $view Name of the view
      *
      * @return  array   Array of associations for the item
      *
@@ -38,8 +39,7 @@ class Manifest2mdHelperAssociation extends CategoryHelperAssociation
         $view = is_null($view) ? $jinput->get('view') : $view;
         $id = empty($id) ? $jinput->getInt('id') : $id;
 
-        if ($view == 'category' || $view == 'categories')
-        {
+        if ($view == 'category' || $view == 'categories') {
             return self::getCategoryAssociations($id, 'com_manifest2md');
         }
 

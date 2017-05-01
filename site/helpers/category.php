@@ -9,6 +9,7 @@
  */
 // No direct access
 defined('_JEXEC') or die;
+
 /**
  * Content Component Category Tree
  *
@@ -19,7 +20,7 @@ class Manifest2mdCategories extends JCategories
     /**
      * Class constructor
      *
-     * @param   array  $options  Array of options
+     * @param   array $options Array of options
      *
      * @since   11.1
      */

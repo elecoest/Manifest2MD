@@ -19,14 +19,14 @@ jimport('joomla.application.component.controllerform');
  */
 class Manifest2mdControllerExtension extends JControllerForm
 {
-	/**
-	 * Constructor
-	 *
-	 * @throws Exception
-	 */
-	public function __construct()
-	{
-		$this->view_list = 'extensions';
-		parent::__construct();
-	}
+    /**
+     * Constructor
+     *
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        $this->view_list = 'extensions';
+        parent::__construct();
+    }
 }
