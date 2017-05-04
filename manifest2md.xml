@@ -2,14 +2,13 @@
 <extension type="component" version="3.0" method="upgrade">
     <name>com_manifest2md</name>
     <creationDate>2017-05-01</creationDate>
-    <copyright>2017 elecoest</copyright>
+    <copyright>2017 AllEvents3</copyright>
     <license>GNU General Public License version 2 ou version ultérieure ; Voir LICENSE.txt</license>
     <author>Emmanuel Lecoester</author>
     <authorEmail>elecoest@gmail.com</authorEmail>
     <authorUrl>https://www.allevents3.com</authorUrl>
-    <version>CVS: 1.0.0</version>
+    <version>CVS: 1.0.1</version>
     <description>Joomla Manifest To MarkDown</description>
-
 
     <install> <!-- Runs on install -->
         <sql>
@@ -87,6 +86,13 @@
             </fieldset>
         </fields>
     </config>
+    <!-- Update servers -->
+    <updateservers>
+        <server type="extension" priority="1" name="Manifest2md Update Server">
+            https://github.com/elecoest/AE2MD/archive/manifest2md_update.xml
+        </server>
+    </updateservers>
+
     <plugins>
         <plugin group="search" plugin="manifest2md"/>
     </plugins>

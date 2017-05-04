@@ -152,8 +152,8 @@ class Manifest2mdModelExtension extends JModelAdmin
 
 
         $db->setQuery("delete from #__manifest2md_extensions");
-		$db->execute();
- 
+        $db->execute();
+
         $db->setQuery($query);
         $loaddb = $db->loadObjectList();
 

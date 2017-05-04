@@ -81,7 +81,7 @@ class Manifest2mdModelExtensions extends JModelList
         $query->where("doc_element = 'config'");
         $query->where("type = 'component'");
 
-        $query->select('`category`.title AS `category`');
+        $query->select('`category`.alias AS `category`');
         $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`category`');
 
         $db->setQuery($query);

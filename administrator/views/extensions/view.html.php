@@ -50,6 +50,11 @@ class Manifest2mdViewExtensions extends JViewLegacy
         $this->addToolbar();
 
         $this->sidebar = JHtmlSidebar::render();
+
+        if (empty($this->items)) {
+            JFactory::getApplication()->enqueueMessage(JText::_('COM_MANIFEST2MD_NO_EXTENSIONS'), 'warning');
+        }
+
         parent::display($tpl);
     }
 
@@ -197,7 +202,6 @@ class Manifest2mdViewExtensions extends JViewLegacy
             JText::_("JOPTION_SELECT_CATEGORY"),
             'filter_category',
             JHtml::_('select.options', JHtml::_('category.options', 'com_manifest2md'), "value", "text", $this->state->get('filter.category'))
-
         );
 
     }

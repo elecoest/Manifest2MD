@@ -123,7 +123,10 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
         $model = $this->getModel('extensions');
         $items = $model->getComponentsConfig();
         foreach ($items as $item) {
+            $g_se_MD->CheckFolder($item->category);
             $msg .= '<br/>, ' . $g_se_MD->MakeMDConfig($item->element, $item->category);
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDObjects($item->element, $item->category);
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDViews($item->element, $item->category);
         }
 
         $items = $model->getModules();
@@ -136,64 +139,6 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
             $msg .= '<br/>, ' . $g_se_MD->MakeMD($item->element, 'plugins', $item->folder, $item->category);
         }
 
-
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMDObject('com_allevents', 'activity');
-
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('aerating', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('aesocial', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('aevote', 'plugins', 'ajax');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('aevote', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('allevents', 'plugins', 'acymailing');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('allevents', 'plugins', 'content');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('allevents', 'plugins', 'editors-xtd');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('allevents', 'plugins', 'finder');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('allevents', 'plugins', 'quickicon');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('allevents', 'plugins', 'search');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('alleventsupdate', 'plugins', 'quickicon');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('bycheck', 'plugins', 'payment');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('byorder', 'plugins', 'payment');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('cbusers', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'activities');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'activity');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'agenda');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'agendas');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'bootstrapcalendar');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'categories');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'category');		
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'event');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'eventform');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'events');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'fullcalendar');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'place');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'places');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'public');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'ressource');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'section');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'sections');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('jcomments', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aebanner', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aecalendar', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aecustom', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aedeck', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aedrag', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aefilters', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aefullcalendar', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aelist', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aeslide', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aeslider', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('mod_aeuikit', 'modules');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('opengraph', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('paypal', 'plugins', 'payment');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('richsnippets', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('twittercard', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('default', 'views', 'buy');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('aegoogle', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('alphauserpoints', 'plugins', 'allevents');
-        // $msg .= '<br/>, ' . $g_se_MD->MakeMD('cb.allevents', 'plugins', 'cb/plug_cballevents');
-        // $msg .= '<br/>, '. $g_se_MD->MakeMD('default','views','orders');
-        // $msg .= '<br/>, '. $g_se_MD->MakeMD('default','views','payment');
-
         $this->setRedirect('index.php?option=com_manifest2md', $msg);
     }
-
 }
