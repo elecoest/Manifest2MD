@@ -494,20 +494,16 @@ class AllEventsClassMD
         $handle = fopen($filename, 'w');
 
         $sLine = '# Component Configuration';
+                           fwrite($handle, $sLine . PHP_EOL);
 
-        foreach ($get_xml->fieldset as $fieldset) {
-            foreach ($fieldset->field as $field) {
-                if (!isset($field['aeimage'])) {
-                    if ($field['type'] == 'AETitleImg') {
-                        if ($field['aeicon'] != 'info-circle') {
-                            $sLine = '## <i class="fa fa-' . JText::_($field['aeicon']) . '" aria-hidden="true"></i> ' . JText::_($field['label']) . ' ...';
-                            fwrite($handle, $sLine . PHP_EOL);
-                            $sLine = ' | Option | Description | Value |';
+						   $sLine = ' | Option | Description | Value |';
                             fwrite($handle, $sLine . PHP_EOL);
                             $sLine = ' | ------ | ----------- | ----- |';
                             fwrite($handle, $sLine . PHP_EOL);
-                        }
-                    } elseif ($field['type'] == 'rules') {
+
+        foreach ($get_xml->fieldset as $fieldset) {
+            foreach ($fieldset->field as $field) {
+					if ($field['type'] == 'rules') {
                         $get_rules = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/access.xml');
                         $sLine = '## ' . JText::_($field['label']) . ' ...';
                         fwrite($handle, $sLine . PHP_EOL);
@@ -537,7 +533,7 @@ class AllEventsClassMD
                         }
                         fwrite($handle, $sLine . PHP_EOL);
                     }
-                }
+                
             }
         }
         fclose($handle);
