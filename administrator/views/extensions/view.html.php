@@ -69,6 +69,7 @@ class Manifest2mdViewExtensions extends JViewLegacy
     {
         $state = $this->get('State');
         $canDo = Manifest2mdHelpersManifest2mdadmin::getActions();
+        $user = JFactory::getUser();
 
         JToolBarHelper::title(JText::_('COM_MANIFEST2MD_TITLE_EXTENSIONS'), 'extensions.png');
 
@@ -119,6 +120,21 @@ class Manifest2mdViewExtensions extends JViewLegacy
                 JToolBarHelper::divider();
             }
         }
+
+        // Add a batch button
+        if ($user->authorise('core.create', 'com_manifest2md')
+            && $user->authorise('core.edit', 'com_manifest2md')
+            && $user->authorise('core.edit.state', 'com_manifest2md')
+        ) {
+            $title = JText::_('JTOOLBAR_BATCH');
+
+            // Instantiate a new JLayoutFile instance and render the batch button
+            $layout = new JLayoutFile('joomla.toolbar.batch');
+
+            $dhtml = $layout->render(array('title' => $title));
+            JToolbar::getInstance('toolbar')->appendButton('Custom', $dhtml, 'batch');
+        }
+
         JToolBarHelper::custom('extensions.makemd', 'cogs.png', 'cogs.png', 'JTOOLBAR_MAKEMD', false);
         JToolBarHelper::custom('extensions.discover', 'cogs.png', 'cogs.png', 'JTOOLBAR_DISCOVER', false);
         if ($canDo->get('core.admin')) {
@@ -224,7 +240,7 @@ class Manifest2mdViewExtensions extends JViewLegacy
             'a.`identifier`' => JText::_('COM_MANIFEST2MD_EXTENSIONS_IDENTIFIER'),
             'a.`doc_element`' => JText::_('COM_MANIFEST2MD_EXTENSIONS_DOC_ELEMENT'),
             'a.`specific_home`' => JText::_('COM_MANIFEST2MD_EXTENSIONS_SPECIFIC_HOME'),
-            'a.`category`' => JText::_('COM_MANIFEST2MD_EXTENSIONS_CATEGORY'),
+            'a.`catid`' => JText::_('COM_MANIFEST2MD_EXTENSIONS_CATEGORY'),
         );
     }
 }

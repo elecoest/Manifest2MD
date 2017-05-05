@@ -1,6 +1,6 @@
 <?php
 /**
- * @version    CVS: 1.0.0
+ * @version    CVS: 1.0.2
  * @package    Com_Manifest2md
  * @author     Emmanuel Lecoester <elecoest@gmail.com>
  * @copyright  2017 elecoest
@@ -200,7 +200,7 @@ if (!empty($this->extra_sidebar)) {
                         <?php echo JHtml::_('grid.sort', 'COM_MANIFEST2MD_EXTENSIONS_SPECIFIC_HOME', 'a.`specific_home`', $listDirn, $listOrder); ?>
                     </th>
                     <th class='left'>
-                        <?php echo JHtml::_('grid.sort', 'COM_MANIFEST2MD_EXTENSIONS_CATEGORY', 'a.`category`', $listDirn, $listOrder); ?>
+                        <?php echo JHtml::_('grid.sort', 'COM_MANIFEST2MD_EXTENSIONS_CATEGORY', 'a.`catid`', $listDirn, $listOrder); ?>
                     </th>
 
 
@@ -304,7 +304,21 @@ if (!empty($this->extra_sidebar)) {
                 <?php endforeach; ?>
                 </tbody>
             </table>
-
+            <?php // Load the batch processing form. ?>
+            <?php if ($user->authorise('core.create', 'com_manifest2md')
+                && $user->authorise('core.edit', 'com_manifest2md')
+                && $user->authorise('core.edit.state', 'com_manifest2md')
+            ) : ?>
+                <?php echo JHtml::_(
+                    'bootstrap.renderModal',
+                    'collapseModal',
+                    array(
+                        'title' => JText::_('COM_MANIFEST2MD_BATCH_OPTIONS'),
+                        'footer' => $this->loadTemplate('batch_footer')
+                    ),
+                    $this->loadTemplate('batch_body')
+                ); ?>
+            <?php endif; ?>
             <input type="hidden" name="task" value=""/>
             <input type="hidden" name="boxchecked" value="0"/>
             <input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>"/>

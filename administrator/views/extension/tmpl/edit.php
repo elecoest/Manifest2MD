@@ -69,7 +69,7 @@ $document->addStyleSheet(JUri::root() . 'media/com_manifest2md/css/form.css');
                     <?php echo $this->form->renderField('identifier'); ?>
                     <?php echo $this->form->renderField('doc_element'); ?>
                     <?php echo $this->form->renderField('specific_home'); ?>
-                    <?php echo $this->form->renderField('category'); ?>
+                    <?php echo $this->form->renderField('catid'); ?>
 
 
                     <?php if ($this->state->params->get('save_history', 1)) : ?>

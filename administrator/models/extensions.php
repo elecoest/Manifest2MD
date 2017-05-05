@@ -42,7 +42,7 @@ class Manifest2mdModelExtensions extends JModelList
                 'identifier', 'a.`identifier`',
                 'doc_element', 'a.`doc_element`',
                 'specific_home', 'a.`specific_home`',
-                'category', 'a.`category`',
+                'category', 'a.`catid`',
             );
         }
 
@@ -82,7 +82,7 @@ class Manifest2mdModelExtensions extends JModelList
         $query->where("type = 'component'");
 
         $query->select('`category`.alias AS `category`');
-        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`category`');
+        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`catid`');
 
         $db->setQuery($query);
         $loaddb = $db->loadObjectList();
@@ -105,7 +105,7 @@ class Manifest2mdModelExtensions extends JModelList
         $query->where("type = 'module'");
 
         $query->select('`category`.title AS `category`');
-        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`category`');
+        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`catid`');
 
         $db->setQuery($query);
         $loaddb = $db->loadObjectList();
@@ -128,7 +128,7 @@ class Manifest2mdModelExtensions extends JModelList
         $query->where("type = 'plugin'");
 
         $query->select('`category`.title AS `category`');
-        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`category`');
+        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`catid`');
 
         $db->setQuery($query);
         $loaddb = $db->loadObjectList();
@@ -236,7 +236,7 @@ class Manifest2mdModelExtensions extends JModelList
         $query->join('LEFT', '#__users AS `modified_by` ON `modified_by`.id = a.`modified_by`');
         // Join over the category 'category'
         $query->select('`category`.title AS `category`');
-        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`category`');
+        $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`catid`');
 
         // Filter by published state
         $published = $this->getState('filter.state');
@@ -255,7 +255,7 @@ class Manifest2mdModelExtensions extends JModelList
                 $query->where('a.id = ' . (int)substr($search, 3));
             } else {
                 $search = $db->Quote('%' . $db->escape($search, true) . '%');
-                $query->where('( a.name LIKE ' . $search . '  OR  a.type LIKE ' . $search . '  OR  a.element LIKE ' . $search . '  OR  a.folder LIKE ' . $search . '  OR  a.identifier LIKE ' . $search . '  OR  a.doc_element LIKE ' . $search . '  OR  a.specific_home LIKE ' . $search . '  OR  a.category LIKE ' . $search . ' )');
+                $query->where('( a.name LIKE ' . $search . '  OR  a.type LIKE ' . $search . '  OR  a.element LIKE ' . $search . '  OR  a.folder LIKE ' . $search . '  OR  a.identifier LIKE ' . $search . '  OR  a.doc_element LIKE ' . $search . '  OR  a.specific_home LIKE ' . $search . '  OR  a.catid LIKE ' . $search . ' )');
             }
         }
 
@@ -281,7 +281,7 @@ class Manifest2mdModelExtensions extends JModelList
         //Filtering category
         $filter_category = $this->state->get("filter.category");
         if ($filter_category !== null && !empty($filter_category)) {
-            $query->where("a.`category` = '" . $db->escape($filter_category) . "'");
+            $query->where("a.`catid` = '" . $db->escape($filter_category) . "'");
         }
         // Add the list ordering clause.
         $orderCol = $this->state->get('list.ordering');

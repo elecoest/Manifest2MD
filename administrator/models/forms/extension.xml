@@ -52,7 +52,7 @@
         <field name="specific_home" label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_SPECIFIC_HOME"
                description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_SPECIFIC_HOME"
                hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_SPECIFIC_HOME" showon="doc_element:config,Items,Views"/>
-        <field name="category" type="category" extension="com_manifest2md" required="true"
+        <field name="catid" type="category" extension="com_manifest2md" required="true"
                label="COM_MANIFEST2MD_FORM_LBL_EXTENSION_CATEGORY"
                description="COM_MANIFEST2MD_FORM_DESC_EXTENSION_CATEGORY"
                hint="COM_MANIFEST2MD_FORM_LBL_EXTENSION_CATEGORY"/>

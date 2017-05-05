@@ -96,7 +96,7 @@
     <plugins>
         <plugin group="search" plugin="manifest2md"/>
     </plugins>
-
+    <scriptfile>script.php</scriptfile>
 </extension>
         <!-- Component built by the Joomla Component Creator -->
         <!-- http://www.component-creator.com/ -->
