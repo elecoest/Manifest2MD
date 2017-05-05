@@ -235,14 +235,14 @@ if (!empty($this->extra_sidebar)) {
                                     endif; ?>
                                     <span class="sortable-handler hasTooltip <?php echo $disableClassName ?>"
                                           title="<?php echo $disabledLabel ?>">
-							<i class="icon-menu"></i>
-						</span>
+                                        <i class="icon-menu"></i>
+                                    </span>
                                     <input type="text" style="display:none" name="order[]" size="5"
                                            value="<?php echo $item->ordering; ?>" class="width-20 text-area-order "/>
                                 <?php else : ?>
                                     <span class="sortable-handler inactive">
-							<i class="icon-menu"></i>
-						</span>
+                                        <i class="icon-menu"></i>
+                                    </span>
                                 <?php endif; ?>
                             </td>
                         <?php endif; ?>

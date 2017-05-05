@@ -26,8 +26,8 @@ class Manifest2mdModelExtension extends JModelItem
      * Method to get an object.
      *
      * @param   integer $id The id of the object to get.
-     *
-     * @return  mixed    Object on success, false on failure.
+     * @return mixed Object on success, false on failure.
+     * @throws Exception
      */
     public function &getData($id = null)
     {
@@ -126,7 +126,7 @@ class Manifest2mdModelExtension extends JModelItem
 
             // Attempt to check the row in.
             if (method_exists($table, 'checkin')) {
-                if (!$table->checkin($id)) {
+                if (!$table->checkIn($id)) {
                     return false;
                 }
             }

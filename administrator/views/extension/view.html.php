@@ -71,21 +71,21 @@ class Manifest2mdViewExtension extends JViewLegacy
 
         $canDo = Manifest2mdHelpersManifest2mdadmin::getActions();
 
-        JToolBarHelper::title(JText::_('COM_MANIFEST2MD_TITLE_EXTENSION'), 'extension.png');
+        JToolbarHelper::title(JText::_('COM_MANIFEST2MD_TITLE_EXTENSION'), 'extension.png');
 
         // If not checked out, can save the item.
         if (!$checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create')))) {
-            JToolBarHelper::apply('extension.apply', 'JTOOLBAR_APPLY');
-            JToolBarHelper::save('extension.save', 'JTOOLBAR_SAVE');
+            JToolbarHelper::apply('extension.apply', 'JTOOLBAR_APPLY');
+            JToolbarHelper::save('extension.save', 'JTOOLBAR_SAVE');
         }
 
         if (!$checkedOut && ($canDo->get('core.create'))) {
-            JToolBarHelper::custom('extension.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+            JToolbarHelper::custom('extension.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
         }
 
         // If an existing item, can save to a copy.
         if (!$isNew && $canDo->get('core.create')) {
-            JToolBarHelper::custom('extension.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+            JToolbarHelper::custom('extension.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
         }
 
         // Button for version control
@@ -94,9 +94,9 @@ class Manifest2mdViewExtension extends JViewLegacy
         }
 
         if (empty($this->item->id)) {
-            JToolBarHelper::cancel('extension.cancel', 'JTOOLBAR_CANCEL');
+            JToolbarHelper::cancel('extension.cancel', 'JTOOLBAR_CANCEL');
         } else {
-            JToolBarHelper::cancel('extension.cancel', 'JTOOLBAR_CLOSE');
+            JToolbarHelper::cancel('extension.cancel', 'JTOOLBAR_CLOSE');
         }
     }
 }

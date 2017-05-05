@@ -176,7 +176,7 @@ class Manifest2mdModelExtensions extends JModelList
             if (stripos($search, 'id:') === 0) {
                 $query->where('a.id = ' . (int)substr($search, 3));
             } else {
-                $search = $db->Quote('%' . $db->escape($search, true) . '%');
+                $search = $db->quote('%' . $db->escape($search, true) . '%');
                 $query->where('( a.name LIKE ' . $search . '  OR  a.element LIKE ' . $search . '  OR  a.folder LIKE ' . $search . '  OR  a.specific_home LIKE ' . $search . '  OR categories_2701718.title LIKE ' . $search . ' )');
             }
         }
@@ -220,8 +220,7 @@ class Manifest2mdModelExtensions extends JModelList
     /**
      * Overrides the default function to check Date fields format, identified by
      * "_dateformat" suffix, and erases the field if it's not correct.
-     *
-     * @return void
+     * @return mixed
      */
     protected function loadFormData()
     {

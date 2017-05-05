@@ -20,8 +20,9 @@ class Manifest2mdControllerExtensionForm extends JControllerForm
     /**
      * Method to check out an item for editing and redirect to the edit form.
      *
-     * @return void
-     *
+     * @param null $key
+     * @param null $urlVar
+     * @return bool|void
      * @since    1.6
      */
     public function edit($key = NULL, $urlVar = NULL)
@@ -55,8 +56,9 @@ class Manifest2mdControllerExtensionForm extends JControllerForm
     /**
      * Method to save a user's profile data.
      *
-     * @return void
-     *
+     * @param null $key
+     * @param null $urlVar
+     * @return bool|void
      * @throws Exception
      * @since  1.6
      */
@@ -145,9 +147,7 @@ class Manifest2mdControllerExtensionForm extends JControllerForm
     /**
      * Method to abort current operation
      *
-     * @return void
-     *
-     * @throws Exception
+     * @param null $key
      */
     public function cancel($key = NULL)
     {

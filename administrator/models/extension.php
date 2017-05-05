@@ -10,9 +10,9 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-use Joomla\Registry\Registry;
-use Joomla\String\StringHelper;
-use Joomla\Utilities\ArrayHelper;
+//use Joomla\Registry\Registry;
+//use Joomla\String\StringHelper;
+//use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.modeladmin');
 
@@ -78,7 +78,7 @@ class Manifest2mdModelExtension extends JModelAdmin
     public function getForm($data = array(), $loadData = true)
     {
         // Initialise variables.
-        $app = JFactory::getApplication();
+        //$app = JFactory::getApplication();
 
         // Get the form.
         $form = $this->loadForm(
@@ -129,7 +129,6 @@ class Manifest2mdModelExtension extends JModelAdmin
                 if (!$table->check()) {
                     throw new Exception($table->getError());
                 }
-
 
                 // Trigger the before save event.
                 $result = $dispatcher->trigger($this->event_before_save, array($context, &$table, true));
@@ -197,32 +196,14 @@ class Manifest2mdModelExtension extends JModelAdmin
             $table->element = $item->element;
             $table->folder = $item->folder;
             $table->identifier = 'nc';
-            $table->doc_element = "config";
-            $table->specific_home = "";
+            $table->doc_element = 'config';
+            $table->specific_home = '';
             $table->catid = 1;
             $table->check();
             $table->store();
         }
 
         return $msg;
-    }
-
-    /**
-     * Method to get a single record.
-     *
-     * @param   integer $pk The id of the primary key.
-     *
-     * @return  mixed    Object on success, false on failure.
-     *
-     * @since    1.6
-     */
-    public function getItem($pk = null)
-    {
-        if ($item = parent::getItem($pk)) {
-            // Do any procesing on fields here if needed
-        }
-
-        return $item;
     }
 
     /**
@@ -267,11 +248,6 @@ class Manifest2mdModelExtension extends JModelAdmin
                 }
             }
 
-            // Alter the title & alias
-            // $data = $this->generateNewTitle($categoryId, $this->table->alias, $this->table->name);
-            // $this->table->name = $data['0'];
-            // $this->table->alias = $data['1'];
-
             // Reset the ID because we are making a copy
             $this->table->id = 0;
 
@@ -281,21 +257,15 @@ class Manifest2mdModelExtension extends JModelAdmin
             // Unpublish because we are making a copy
             $this->table->state = 0;
 
-            // TODO: Deal with ordering?
-
             // Check the row.
             if (!$this->table->check()) {
                 $this->setError($this->table->getError());
-
                 return false;
             }
-
-            // $this->createTagsHelper($this->tagsObserver, $this->type, $pk, $this->typeAlias, $this->table);
 
             // Store the row.
             if (!$this->table->store()) {
                 $this->setError($this->table->getError());
-
                 return false;
             }
 
@@ -372,6 +342,24 @@ class Manifest2mdModelExtension extends JModelAdmin
         }
 
         return $data;
+    }
+
+    /**
+     * Method to get a single record.
+     *
+     * @param   integer $pk The id of the primary key.
+     *
+     * @return  mixed    Object on success, false on failure.
+     *
+     * @since    1.6
+     */
+    public function getItem($pk = null)
+    {
+        if ($item = parent::getItem($pk)) {
+            // Do any procesing on fields here if needed
+        }
+
+        return $item;
     }
 
     /**

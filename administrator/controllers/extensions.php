@@ -29,7 +29,7 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
     public function duplicate()
     {
         // Check for request forgeries
-        Jsession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
         // Get id(s)
         $pks = $this->input->post->get('cid', array(), 'array');
@@ -122,6 +122,7 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
 
         $model = $this->getModel('extensions');
         $items = $model->getComponentsConfig();
+        $msg = '';
         foreach ($items as $item) {
             $g_se_MD->CheckFolder($item->category);
             $msg .= '<br/>, ' . $g_se_MD->MakeMDConfig($item->element, $item->category);
@@ -131,12 +132,14 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
 
         $items = $model->getModules();
         foreach ($items as $item) {
-            $msg .= '<br/>, ' . $g_se_MD->MakeMD($item->element, 'modules', '', $item->category);
+            $g_se_MD->CheckFolder($item->category);
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDModule($item->element, $item->category);
         }
 
         $items = $model->getPlugins();
         foreach ($items as $item) {
-            $msg .= '<br/>, ' . $g_se_MD->MakeMD($item->element, 'plugins', $item->folder, $item->category);
+            $g_se_MD->CheckFolder($item->category);
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDPlugin($item->element, $item->folder, $item->category);
         }
 
         $this->setRedirect('index.php?option=com_manifest2md', $msg);

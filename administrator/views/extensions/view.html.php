@@ -71,14 +71,14 @@ class Manifest2mdViewExtensions extends JViewLegacy
         $canDo = Manifest2mdHelpersManifest2mdadmin::getActions();
         $user = JFactory::getUser();
 
-        JToolBarHelper::title(JText::_('COM_MANIFEST2MD_TITLE_EXTENSIONS'), 'extensions.png');
+        JToolbarHelper::title(JText::_('COM_MANIFEST2MD_TITLE_EXTENSIONS'), 'extensions.png');
 
         // Check if the form exists before showing the add/edit buttons
         $formPath = JPATH_COMPONENT_ADMINISTRATOR . '/views/extension';
 
         if (file_exists($formPath)) {
             if ($canDo->get('core.create')) {
-                JToolBarHelper::addNew('extension.add', 'JTOOLBAR_NEW');
+                JToolbarHelper::addNew('extension.add', 'JTOOLBAR_NEW');
 
                 if (isset($this->items[0])) {
                     JToolbarHelper::custom('extensions.duplicate', 'copy.png', 'copy_f2.png', 'JTOOLBAR_DUPLICATE', true);
@@ -86,38 +86,38 @@ class Manifest2mdViewExtensions extends JViewLegacy
             }
 
             if ($canDo->get('core.edit') && isset($this->items[0])) {
-                JToolBarHelper::editList('extension.edit', 'JTOOLBAR_EDIT');
+                JToolbarHelper::editList('extension.edit', 'JTOOLBAR_EDIT');
             }
         }
 
         if ($canDo->get('core.edit.state')) {
             if (isset($this->items[0]->state)) {
-                JToolBarHelper::divider();
-                JToolBarHelper::custom('extensions.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
-                JToolBarHelper::custom('extensions.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+                JToolbarHelper::divider();
+                JToolbarHelper::custom('extensions.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
+                JToolbarHelper::custom('extensions.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
             } elseif (isset($this->items[0])) {
                 // If this component does not use state then show a direct delete button as we can not trash
                 JToolBarHelper::deleteList('', 'extensions.delete', 'JTOOLBAR_DELETE');
             }
 
             if (isset($this->items[0]->state)) {
-                JToolBarHelper::divider();
-                JToolBarHelper::archiveList('extensions.archive', 'JTOOLBAR_ARCHIVE');
+                JToolbarHelper::divider();
+                JToolbarHelper::archiveList('extensions.archive', 'JTOOLBAR_ARCHIVE');
             }
 
             if (isset($this->items[0]->checked_out)) {
-                JToolBarHelper::custom('extensions.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+                JToolbarHelper::custom('extensions.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
             }
         }
 
         // Show trash and delete for components that uses the state field
         if (isset($this->items[0]->state)) {
             if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
-                JToolBarHelper::deleteList('', 'extensions.delete', 'JTOOLBAR_EMPTY_TRASH');
-                JToolBarHelper::divider();
+                JToolbarHelper::deleteList('', 'extensions.delete', 'JTOOLBAR_EMPTY_TRASH');
+                JToolbarHelper::divider();
             } elseif ($canDo->get('core.edit.state')) {
-                JToolBarHelper::trash('extensions.trash', 'JTOOLBAR_TRASH');
-                JToolBarHelper::divider();
+                JToolbarHelper::trash('extensions.trash', 'JTOOLBAR_TRASH');
+                JToolbarHelper::divider();
             }
         }
 
@@ -135,10 +135,10 @@ class Manifest2mdViewExtensions extends JViewLegacy
             JToolbar::getInstance('toolbar')->appendButton('Custom', $dhtml, 'batch');
         }
 
-        JToolBarHelper::custom('extensions.makemd', 'cogs.png', 'cogs.png', 'JTOOLBAR_MAKEMD', false);
-        JToolBarHelper::custom('extensions.discover', 'cogs.png', 'cogs.png', 'JTOOLBAR_DISCOVER', false);
+        JToolbarHelper::custom('extensions.makemd', 'cogs.png', 'cogs.png', 'JTOOLBAR_MAKEMD', false);
+        JToolbarHelper::custom('extensions.discover', 'cogs.png', 'cogs.png', 'JTOOLBAR_DISCOVER', false);
         if ($canDo->get('core.admin')) {
-            JToolBarHelper::preferences('com_manifest2md');
+            JToolbarHelper::preferences('com_manifest2md');
         }
 
         // Set sidebar action - New in 3.0
@@ -225,7 +225,7 @@ class Manifest2mdViewExtensions extends JViewLegacy
     /**
      * Method to order fields
      *
-     * @return void
+     * @return array
      */
     protected function getSortFields()
     {

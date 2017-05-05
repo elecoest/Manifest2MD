@@ -81,7 +81,7 @@ class Manifest2mdModelExtensionForm extends JModelForm
 
             // Attempt to check the row in.
             if (method_exists($table, 'checkin')) {
-                if (!$table->checkin($id)) {
+                if (!$table->checkIn($id)) {
                     return false;
                 }
             }
@@ -163,7 +163,7 @@ class Manifest2mdModelExtensionForm extends JModelForm
     public function save($data)
     {
         $id = (!empty($data['id'])) ? $data['id'] : (int)$this->getState('extension.id');
-        $state = (!empty($data['state'])) ? 1 : 0;
+        //$state = (!empty($data['state'])) ? 1 : 0;
         $user = JFactory::getUser();
 
         if ($id) {

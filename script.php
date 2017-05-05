@@ -45,7 +45,7 @@ class com_Manifest2MDInstallerScript
      *
      * @var array
      */
-    protected $postInstallationMessages = [ ];
+    protected $postInstallationMessages = [];
 
     /**
      * @var array Obsolete files and folders to remove from the AllEvents oldest releases
@@ -59,7 +59,7 @@ class com_Manifest2MDInstallerScript
      */
     function install($parent)
     {
-		echo '<p>' . JText::_('COM_MANIFEST2MD_UNINSTALL') . '</p>';
+        echo '<p>' . JText::_('COM_MANIFEST2MD_UNINSTALL') . '</p>';
     }
 
     /**
@@ -69,7 +69,7 @@ class com_Manifest2MDInstallerScript
      */
     function uninstall($parent)
     {
-        echo '<p>' . JText::_('COM_MANIFEST2MD_UNINSTALL') . '</p>';       
+        echo '<p>' . JText::_('COM_MANIFEST2MD_UNINSTALL') . '</p>';
     }
 
     /**
@@ -79,7 +79,7 @@ class com_Manifest2MDInstallerScript
      */
     function update($parent)
     {
-        echo '<p>' . JText::_('COM_MANIFEST2MD_UPDATE') . '</p>';       
+        echo '<p>' . JText::_('COM_MANIFEST2MD_UPDATE') . '</p>';
     }
 
     /**
@@ -148,67 +148,6 @@ class com_Manifest2MDInstallerScript
     }
 
     /**
-     * method to run after an install/update/uninstall method
-     *
-     * @return void
-     */
-    private function _removeObsoleteFilesAndFolders()
-    {
-        // Remove files
-        jimport('joomla.filesystem.file');
-        if (!empty($this->AllEventsRemoveFiles['files'])) {
-            foreach ($this->AllEventsRemoveFiles['files'] as $file) {
-                $f = JPATH_ROOT . '/' . $file;
-                if (!JFile::exists($f))
-                    continue;
-                JFile::delete($f);
-            }
-        }
-
-        // Remove folders
-        jimport('joomla.filesystem.file');
-        if (!empty($this->AllEventsRemoveFiles['folders'])) {
-            foreach ($this->AllEventsRemoveFiles['folders'] as $folder) {
-                $f = JPATH_ROOT . '/' . $folder;
-                if (!JFolder::exists($f))
-                    continue;
-                JFolder::delete($f);
-            }
-        }
-    }
-
-    /**
-     * sets parameter values in the component's row of the extension table
-     */
-
-    /**
-     * com_AllEventsInstallerScript::setParams()
-     *
-     * @param mixed $param_array
-     */
-    function setParams($param_array)
-    {
-        if (count($param_array) > 0) {
-            // read the existing component value(s)
-            $db = JFactory::getDbo();
-            $db->setQuery('SELECT params FROM `#__extensions` WHERE name = ' . $db->quote('allevents'));
-            $params = json_decode($db->loadResult(), true);
-            // Add the new variable(s) to the existing one(s)
-            foreach ($param_array as $name => $value) {
-                if (!isset($params[(string )$name])) {
-                    $params[(string )$name] = (string )$value;
-                } elseif (($params[(string )$name] == '') && ($params[(string )$name] <> 0)) {
-                    $params[(string )$name] = (string )$value;
-                }
-            }
-            // Store the combined new and existing values back as a JSON string
-            $paramsString = json_encode($params);
-            $db->setQuery('UPDATE `#__extensions` SET params = ' . $db->quote($paramsString) . ' WHERE name = ' . $db->quote('allevents'));
-            $db->execute();
-        }
-    }
-
-    /**
      * Applies the post-installation messages for Joomla! 3.2 or later
      *
      * @return void
@@ -249,6 +188,10 @@ class com_Manifest2MDInstallerScript
             $this->addPostInstallationMessage($message);
         }
     }
+
+    /**
+     * sets parameter values in the component's row of the extension table
+     */
 
     /**
      * Adds or updates a post-installation message (PIM) definition for Joomla! 3.2 or later. You can use this in your
@@ -329,7 +272,7 @@ class com_Manifest2MDInstallerScript
         }
 
         // Initialise array keys
-   // Initialise array keys
+        // Initialise array keys
         $defaultOptions = [
             'extension_id' => '',
             'type' => '',
@@ -478,5 +421,62 @@ class com_Manifest2MDInstallerScript
         // Insert the new row
         $options = (object)$options;
         $db->insertObject($tableName, $options);
+    }
+
+    /**
+     * com_AllEventsInstallerScript::setParams()
+     *
+     * @param mixed $param_array
+     */
+    function setParams($param_array)
+    {
+        if (count($param_array) > 0) {
+            // read the existing component value(s)
+            $db = JFactory::getDbo();
+            $db->setQuery('SELECT params FROM `#__extensions` WHERE name = ' . $db->quote('allevents'));
+            $params = json_decode($db->loadResult(), true);
+            // Add the new variable(s) to the existing one(s)
+            foreach ($param_array as $name => $value) {
+                if (!isset($params[(string )$name])) {
+                    $params[(string )$name] = (string )$value;
+                } elseif (($params[(string )$name] == '') && ($params[(string )$name] <> 0)) {
+                    $params[(string )$name] = (string )$value;
+                }
+            }
+            // Store the combined new and existing values back as a JSON string
+            $paramsString = json_encode($params);
+            $db->setQuery('UPDATE `#__extensions` SET params = ' . $db->quote($paramsString) . ' WHERE name = ' . $db->quote('allevents'));
+            $db->execute();
+        }
+    }
+
+    /**
+     * method to run after an install/update/uninstall method
+     *
+     * @return void
+     */
+    private function _removeObsoleteFilesAndFolders()
+    {
+        // Remove files
+        jimport('joomla.filesystem.file');
+        if (!empty($this->AllEventsRemoveFiles['files'])) {
+            foreach ($this->AllEventsRemoveFiles['files'] as $file) {
+                $f = JPATH_ROOT . '/' . $file;
+                if (!JFile::exists($f))
+                    continue;
+                JFile::delete($f);
+            }
+        }
+
+        // Remove folders
+        jimport('joomla.filesystem.file');
+        if (!empty($this->AllEventsRemoveFiles['folders'])) {
+            foreach ($this->AllEventsRemoveFiles['folders'] as $folder) {
+                $f = JPATH_ROOT . '/' . $folder;
+                if (!JFolder::exists($f))
+                    continue;
+                JFolder::delete($f);
+            }
+        }
     }
 }

@@ -79,7 +79,7 @@ class Manifest2mdRouter extends JComponentRouterBase
 
         // View is always the first element of the array
         $vars['view'] = array_shift($segments);
-        $model = Manifest2mdHelpersManifest2md::getModel($vars['view']);
+        //$model = Manifest2mdHelpersManifest2md::getModel($vars['view']);
 
         while (!empty($segments)) {
             $segment = array_pop($segments);

@@ -47,12 +47,14 @@ class AllEventsClassMD
      * AllEventsClassMD::MakeMDViews(
      *
      * @param string $extension
+     * @param string $category
+     * @param string $identifier
      * @return string
      */
     public static function MakeMDViews($extension = "com_allevents", $category = "AllEvents", $identifier = "site")
     {
         $msg = "";
-        $list = array();
+        //$list = array();
 
         //get the list of all .xml files in the folder
         if ($identifier == "site") {
@@ -61,19 +63,11 @@ class AllEventsClassMD
             $base_dir = JPATH_ROOT . '/administrator/components/' . $extension . '/views/';
         }
 
-        // $directories = array();
         foreach (scandir($base_dir) as $file) {
             if ($file == '.' || $file == '..') continue;
             $dir = $base_dir . DIRECTORY_SEPARATOR . $file;
             if (is_dir($dir)) {
-                $msg .= '<br/>, ' . self::MakeMD($extension, 'views', $file, $category);
-
-                // $directories[]= array(
-                // 'level' => $level
-                // 'name' => $file,
-                // 'path' => $dir,
-                // 'children' => expandDirectoriesMatrix($dir, $level +1)
-                // );
+                $msg .= '<br/>, ' . self::MakeMDView($extension, $file, $category);
             }
         }
 
@@ -84,31 +78,24 @@ class AllEventsClassMD
      * AllEventsClassMD::MakeMD()
      *
      * @param $extension
-     * @param $path
      * @param string $subpath
+     * @param string $category
      * @return int
      * @internal param mixed $entity
      * @internal param mixed $entities
      */
-    public static function MakeMD($extension, $path, $subpath = "", $category = "AllEvents")
+    public static function MakeMDView($extension, $subpath = "", $category = "AllEvents")
     {
         $lang = JFactory::getLanguage();
         $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
         $lang->load($extension, JPATH_SITE, 'en-GB', true);
-        // $lang->load($extension);
-        // $lang->load($extension, JPATH_ADMINISTRATOR);
-        if ($path == 'plugins') {
-            $lang->load('plg_' . $subpath . '_' . $extension, JPATH_SITE, 'en-GB', true);
-            // $lang->load('plg_' . $subpath . '_' . $extension);
-            $lang->load('plg_' . $subpath . '_' . $extension, JPATH_ADMINISTRATOR, 'en-GB', true);
-        }
 
         $db = JFactory::getDbo();
         $extension_date = "";
         $extension_author = "";
         $extension_authorEmail = "";
-        $extension_name = "";
-        $filename = "";
+        //$extension_name = "";
+        //$filename = "";
         $get_xml = null;
         $home = null;
         $query = $db->getQuery(true);
@@ -129,36 +116,13 @@ class AllEventsClassMD
             $extension_authorEmail = $decode->authorEmail;
         }
 
-        if ($path == 'modules') {
-            $get_xml = simplexml_load_file(JPATH_ROOT . '/' . $path . '/' . $subpath . '/' . $extension . '/' . $extension . '.xml');
-            $home = $get_xml;
-            $extension_name = $get_xml->name;
-            if (empty($extension_name)) {
-                $extension_name = $extension;
-            }
-            $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/' . $path . '/' . JText::_($extension_name) . '.md';
-        } elseif ($path == 'plugins') {
-            $get_xml = simplexml_load_file(JPATH_ROOT . '/' . $path . '/' . $subpath . '/' . $extension . '/' . $extension . '.xml');
-            $home = $get_xml;
-            $extension_name = $get_xml->name;
-            if (empty($extension_name)) {
-                $extension_name = $extension;
-            }
-            $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/' . $path . '/' . JText::_($extension_name) . '.md';
-        } elseif ($path == 'views') {
-            $get_xml = simplexml_load_file(JPATH_ROOT . '/components/' . $extension . '/' . $path . '/' . $subpath . '/tmpl/default.xml');
-            $extension_name = $get_xml->layout['title'];
-            if (empty($extension_name)) {
-                $extension_name = $path . '_' . $subpath;
-            }
-            $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/' . $path . '/' . JText::_($extension_name) . '.md';
-            $home = $get_xml;
-            $get_xml = $get_xml->metadata;
+        $get_xml = simplexml_load_file(JPATH_ROOT . '\\components\\' . $extension . '\\views\\' . $subpath . '\\tmpl\\default.xml');
+        $extension_name = $get_xml->layout['title'];
+        if (empty($extension_name)) {
+            $extension_name = 'views_' . $subpath;
         }
+        $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/views/' . JText::_($extension_name) . '.md';
 
-        //if (!empty($get_xml->version)) {
-        //    $extension_version = $get_xml->version;
-        //}
         if (!empty($get_xml->creationDate)) {
             $extension_date = $get_xml->creationDate;
         }
@@ -169,221 +133,303 @@ class AllEventsClassMD
             $extension_authorEmail = $get_xml->authorEmail;
         }
 
-        if ($path == 'views') {
-            $aepremiumonly = 'false';
-        } else {
-            if (isset($get_xml->aepremiumonly)) {
-                $aepremiumonly = $get_xml->aepremiumonly;
-            } else {
-                $aepremiumonly = 'true';
-            }
-        }
         if (!empty($filename)) {
             $handle = fopen($filename, 'w');
-            $sLine = '# ' . JText::_($extension_name);
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, '# ' . JText::_($extension_name) . PHP_EOL);
+            fwrite($handle, '## Description' . PHP_EOL);
 
-            $sLine = '## Description';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            $description = "";
-            if ($path == 'modules') {
-                $description = $get_xml->description;
-            } elseif ($path == 'plugins') {
-                $description = $get_xml->description;
-            } elseif ($path == 'views') {
-                $description = trim($home->layout->message);
-            }
-
+            $description = trim($get_xml->layout->message);
             $healthy = ["<![CDATA[", "]]>"];
             $yummy = ["", ""];
             $description = str_replace($healthy, $yummy, $description);
-            fwrite($handle, JText::_($description) . PHP_EOL . PHP_EOL);
+            fwrite($handle, JText::_($description) . PHP_EOL);
 
-            if ($path == 'modules') {
-                $sLine = '## Install the module';
-            } elseif ($path == 'plugins') {
-                $sLine = '## Install the plugin';
-            } elseif ($path == 'views') {
-                $sLine = '## Install the component';
-            }
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, '## Install the component' . PHP_EOL);
+            fwrite($handle, '**Step 1:** Download the extension to your local machine as a zip file package.' . PHP_EOL);
+            fwrite($handle, '**Step 2:** From the backend of your Joomla site (administration) select **Extensions >> Manager**, then Click the <b>Browse</b> button and select the extension package on your local machine. Then click the **Upload & Install** button to install module.' . PHP_EOL);
 
-            $sLine = '**Step 1:** Download the extension to your local machine as a zip file package.';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, '## Configure the view' . PHP_EOL);
+            fwrite($handle, 'There are many options for you to customize your extension :' . PHP_EOL);
 
-            $sLine = '**Step 2:** From the backend of your Joomla site (administration) select **Extensions >> Manager**, then Click the <b>Browse</b> button and select the extension package on your local machine. Then click the **Upload & Install** button to install module.';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            foreach ($get_xml->state->fields as $fieldset) {
+                if (($fieldset['name'] == 'request') || ($fieldset['name'] == 'params')) {
+                    fwrite($handle, '### ' . JText::_($fieldset['name']) . PHP_EOL);
+                    fwrite($handle, '| Option | Description | Value |' . PHP_EOL);
+                    fwrite($handle, '| ------ | ----------- | ----- |' . PHP_EOL);
 
-            if ($path == 'modules') {
-                $sLine = '**Step 3:** Go to **Extensions >> Module**, find and click on **' . JText::_($extension_name) . '**. In module detail page, select position for module and pages in which it display. Then enable it.';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'plugins') {
-                $sLine = '**Step 3:** Go to **Extensions >> Plugin**, find and click on **' . JText::_($extension_name) . '**. Then enable it.';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'views') {
-                //null
-            }
-
-            if ($path == 'modules') {
-                $sLine = '## Configure the module';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'plugins') {
-                $sLine = '## Configure the plugin';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'views') {
-                $sLine = '## Configure the view';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            }
-
-            $sLine = 'There are many options for you to customize your extension :';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-
-            if ($path == 'modules') {
-                $sLine = '![Configure module](//documentation.allevents3.com/docs/.images/' . $extension . '_configuration.png)<br/>';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'plugins') {
-                $sLine = '![Configure plugin](//documentation.allevents3.com/docs/.images/' . $subpath . '_' . $extension . '_configuration.png)<br/>';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'views') {
-                $sLine = '![Configure view](//documentation.allevents3.com/docs/.images/' . $subpath . '_' . $extension . '_configuration.png)<br/>';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            }
-
-            if ($path == 'views') {
-                foreach ($home as $fieldset) {
-                    if (($fieldset['name'] == 'request') || ($fieldset['name'] == 'params')) {
-                        $sLine = '### ' . JText::_($fieldset['name']);
-                        fwrite($handle, $sLine . PHP_EOL);
-
-                        $sLine = ' | Option | Description | Value |';
-                        fwrite($handle, $sLine . PHP_EOL);
-                        $sLine = ' | ------ | ----------- | ----- |';
-                        fwrite($handle, $sLine . PHP_EOL);
-
-                        // fwrite($handle, print_r($fieldset->fieldset->field,true). PHP_EOL);
-
-                        foreach ($fieldset->fieldset->field as $field) {
-                            $first = true;
-                            $str = "";
-                            foreach ($field->option as $option) {
-                                if ($first) {
-                                    $str .= '`' . JText::_($option) . '`';
-                                    $first = false;
-                                } else {
-                                    $str .= ', `' . JText::_($option) . '`';
-                                }
-                            }
-                            // $sLine = '| ' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
-                            if (!empty($field['default'])) {
-                                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . (($field['type'] != "hidden") ? $str : '') . (empty($field['default']) ? '' : '(default:`' . JText::_($field['default']) . '`)') . '|';
+                    foreach ($fieldset->fieldset->field as $field) {
+                        $first = true;
+                        $str = "";
+                        foreach ($field->option as $option) {
+                            if ($first) {
+                                $str .= '`' . JText::_($option) . '`';
+                                $first = false;
                             } else {
-                                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
+                                $str .= ', `' . JText::_($option) . '`';
                             }
-
-                            fwrite($handle, $sLine . PHP_EOL);
                         }
-
-                    }
-                }
-            } else {
-                foreach ($get_xml->config->fields->fieldset as $fieldset) {
-                    // $sLine = '### '. JText::_($fieldset->name) ;
-                    // if (!empty($fieldset->field)) {
-                    $sLine = '### ' . JText::_($fieldset['name']);
-                    fwrite($handle, $sLine . PHP_EOL);
-
-                    $sLine = ' | Option | Description | Value |';
-                    fwrite($handle, $sLine . PHP_EOL);
-                    $sLine = ' | ------ | ----------- | ----- |';
-                    fwrite($handle, $sLine . PHP_EOL);
-
-                    foreach ($fieldset->field as $field) {
-                        if ($field['type'] == 'AETitleImg') {
-                            if ($field['aeicon'] != 'info-circle') {
-                                $sLine = '### <i class="fa fa-' . JText::_($field['aeicon']) . '" aria-hidden="true"></i> ' . JText::_($field['label']) . ' ...';
-                                fwrite($handle, $sLine . PHP_EOL);
-                                $sLine = ' | Option | Description | Value |';
-                                fwrite($handle, $sLine . PHP_EOL);
-                                $sLine = ' | ------ | ----------- | ----- |';
-                                fwrite($handle, $sLine . PHP_EOL);
-                            }
+                        // $sLine = '| ' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
+                        if (!empty($field['default'])) {
+                            $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . (($field['type'] != "hidden") ? $str : '') . (empty($field['default']) ? '' : '(default:`' . JText::_($field['default']) . '`)') . '|';
                         } else {
-                            $first = true;
-                            $str = "";
-                            foreach ($field->option as $option) {
-                                if ($first) {
-                                    $str .= '`' . JText::_($option) . '`';
-                                    $first = false;
-                                } else {
-                                    $str .= ', `' . JText::_($option) . '`';
-                                }
-                            }
-                            // $sLine = '| ' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
-                            if (!empty($field['default'])) {
-                                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . (($field['type'] != "hidden") ? $str : '') . (empty($field['default']) ? '' : '(default:`' . JText::_($field['default']) . '`)') . '|';
-                            } else {
-                                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
-                            }
-
-                            fwrite($handle, $sLine . PHP_EOL);
+                            $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
                         }
-                        // }
+
+                        fwrite($handle, $sLine . PHP_EOL);
                     }
                 }
             }
-            $sLine = ' <br/>';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
 
-            $sLine = '## Frequently Asked Questions';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            if (empty($get_xml->aeunsupported)) {
-                $sLine = ' No questions for the moment';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } else {
-                $sLine = JText::_($get_xml->aeunsupported);
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            }
+            fwrite($handle, '## Frequently Asked Questions' . PHP_EOL);
+            fwrite($handle, 'No questions for the moment' . PHP_EOL);
 
-            if ($path == 'modules') {
-                $sLine = '## Uninstall the module';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'plugins') {
-                $sLine = '## Uninstall the plugin';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            } elseif ($path == 'views') {
-                // $sLine = '## Uninstall the component';
-            }
-
-            if ($path != 'views') {
-                $sLine = '1. Login to Joomla backend.';
-                fwrite($handle, $sLine . PHP_EOL);
-                $sLine = '2. Click **Extensions >> Manager** in the top menu.';
-                fwrite($handle, $sLine . PHP_EOL);
-                $sLine = '3. Click **Manage** on the left, navigate on the extension and click the Uninstall button on top.';
-                fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            }
-
-            $sLine = '***';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-            $sLine = ' Once again, thank you so much for downloading our product. As I said at the beginning, I\'d be glad to help you if you have any questions relating to this product. No guarantees, but I\'ll do my best to assist.';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, 'Once again, thank you so much for downloading our product. As I said at the beginning, I\'d be glad to help you if you have any questions relating to this product. No guarantees, but I\'ll do my best to assist.' . PHP_EOL);
 
             $sLine = '> ###### Created on *' . JText::_($extension_date) . '* by *' . JText::_($extension_author) . '* ([' . JText::_($extension_authorEmail) . '](mailto:' . JText::_($extension_authorEmail) . '))';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, $sLine . PHP_EOL);
 
             fclose($handle);
-
-            // if ($path == 'views') {
-            // return '<pre>'.print_r($home->state->fields->fieldset, true).'</pre>' ;
-            // }
         }
         return $filename;
     }
 
     /**
+     * AllEventsClassMD::MakeMD()
+     *
+     * @param string $extension
+     * @param string $category
+     * @return int
+     * @internal param string $subpath
+     * @internal param mixed $entity
+     * @internal param mixed $entities
+     */
+    public static function MakeMDModule($extension = "mod_aesearch", $category = "AllEvents")
+    {
+        $lang = JFactory::getLanguage();
+        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
+        $lang->load($extension, JPATH_SITE, 'en-GB', true);
+
+        $db = JFactory::getDbo();
+        $extension_date = "";
+        $extension_author = "";
+        $extension_authorEmail = "";
+        //$extension_name = "";
+        // $filename = "";
+        $query = $db->getQuery(true);
+
+        $query->select($db->quoteName(['name', 'manifest_cache']))
+            ->from($db->quoteName('#__extensions'))
+            ->where('element = ' . $db->quote($extension))
+            ->where($db->quoteName('type') . ' = ' . $db->quote('component'));
+
+        $db->setQuery($query);
+
+        $results = $db->loadObjectList();
+
+        foreach ($results as $result) {
+            $decode = json_decode($result->manifest_cache);
+            $extension_date = $decode->creationDate;
+            $extension_author = $decode->author;
+            $extension_authorEmail = $decode->authorEmail;
+        }
+
+        $get_xml = simplexml_load_file(JPATH_ROOT . '/modules/' . $extension . '/' . $extension . '.xml');
+        $extension_name = empty($get_xml->name) ? $extension : $get_xml->name;
+        $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/modules/' . JText::_($extension_name) . '.md';
+
+        if (!empty($get_xml->creationDate)) {
+            $extension_date = $get_xml->creationDate;
+        }
+        if (!empty($get_xml->author)) {
+            $extension_author = $get_xml->author;
+        }
+        if (!empty($get_xml->authorEmail)) {
+            $extension_authorEmail = $get_xml->authorEmail;
+        }
+        $handle = fopen($filename, 'w');
+
+        fwrite($handle, '# MANU' . JText::_($extension_name) . PHP_EOL);
+        fwrite($handle, '## Description' . PHP_EOL);
+
+        $healthy = ["<![CDATA[", "]]>"];
+        $yummy = ["", ""];
+        $description = str_replace($healthy, $yummy, $get_xml->description);
+        fwrite($handle, JText::_($description) . PHP_EOL);
+
+        fwrite($handle, '## Install the module' . PHP_EOL);
+        fwrite($handle, '**Step 1:** Download the extension to your local machine as a zip file package.' . PHP_EOL);
+        fwrite($handle, '**Step 2:** From the backend of your Joomla site (administration) select **Extensions >> Manager**, then Click the <b>Browse</b> button and select the extension package on your local machine. Then click the **Upload & Install** button to install module.' . PHP_EOL);
+        fwrite($handle, '**Step 3:** Go to **Extensions >> Module**, find and click on **' . JText::_($extension_name) . '**. In module detail page, select position for module and pages in which it display. Then enable it.' . PHP_EOL);
+
+        fwrite($handle, '## Configure the module' . PHP_EOL);
+        fwrite($handle, 'There are many options for you to customize your extension :' . PHP_EOL);
+
+        foreach ($get_xml->config->fields->fieldset as $fieldset) {
+            fwrite($handle, '### ' . JText::_($fieldset['name']) . PHP_EOL);
+            fwrite($handle, '| Option | Description | Value |' . PHP_EOL);
+            fwrite($handle, '| ------ | ----------- | ----- |' . PHP_EOL);
+
+            foreach ($fieldset->field as $field) {
+                $first = true;
+                $str = "";
+                foreach ($field->option as $option) {
+                    if ($first) {
+                        $str .= '`' . JText::_($option) . '`';
+                        $first = false;
+                    } else {
+                        $str .= ', `' . JText::_($option) . '`';
+                    }
+                }
+                $str = ($field['type'] != 'hidden') ? $str : '';
+                $default = (!empty($field['default'])) ? '(default:`' . JText::_($field['default']) . '`)' : '';
+                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+
+                fwrite($handle, $sLine . PHP_EOL);
+            }
+        }
+
+        fwrite($handle, '## Frequently Asked Questions' . PHP_EOL);
+        fwrite($handle, 'No questions for the moment' . PHP_EOL);
+
+        fwrite($handle, '## Uninstall the module' . PHP_EOL);
+        fwrite($handle, '1. Login to Joomla backend.' . PHP_EOL);
+        fwrite($handle, '2. Click **Extensions >> Manager** in the top menu.' . PHP_EOL);
+        fwrite($handle, '3. Click **Manage** on the left, navigate on the extension and click the Uninstall button on top.' . PHP_EOL);
+
+        fwrite($handle, ' Once again, thank you so much for downloading our product. As I said at the beginning, I\'d be glad to help you if you have any questions relating to this product. No guarantees, but I\'ll do my best to assist.' . PHP_EOL);
+
+        $sLine = '> ###### Created on *' . JText::_($extension_date) . '* by *' . JText::_($extension_author) . '* ([' . JText::_($extension_authorEmail) . '](mailto:' . JText::_($extension_authorEmail) . '))';
+        fwrite($handle, $sLine . PHP_EOL);
+
+        fclose($handle);
+
+        return $filename;
+    }
+
+    /**
+     * AllEventsClassMD::MakeMDPlugin()
+     *
+     * @param string $extension
+     * @param string $subpath
+     * @param string $category
+     * @return int
+     * @internal param mixed $entity
+     * @internal param mixed $entities
+     */
+    public static function MakeMDPlugin($extension = "", $subpath = "", $category = "AllEvents")
+    {
+        $lang = JFactory::getLanguage();
+        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
+        $lang->load($extension, JPATH_SITE, 'en-GB', true);
+        $lang->load('plg_' . $subpath . '_' . $extension, JPATH_SITE, 'en-GB', true);
+        $lang->load('plg_' . $subpath . '_' . $extension, JPATH_ADMINISTRATOR, 'en-GB', true);
+
+        $db = JFactory::getDbo();
+        $extension_date = "";
+        $extension_author = "";
+        $extension_authorEmail = "";
+        //$extension_name = "";
+        //$filename = "";
+        $get_xml = null;
+        $home = null;
+        $query = $db->getQuery(true);
+
+        $query->select($db->quoteName(['name', 'manifest_cache']))
+            ->from($db->quoteName('#__extensions'))
+            ->where('element = ' . $db->quote($extension))
+            ->where($db->quoteName('type') . ' = ' . $db->quote('component'));
+
+        $db->setQuery($query);
+
+        $results = $db->loadObjectList();
+
+        foreach ($results as $result) {
+            $decode = json_decode($result->manifest_cache);
+            $extension_date = $decode->creationDate;
+            $extension_author = $decode->author;
+            $extension_authorEmail = $decode->authorEmail;
+        }
+
+        $get_xml = simplexml_load_file(JPATH_ROOT . '/plugins/' . $subpath . '/' . $extension . '/' . $extension . '.xml');
+
+        $extension_name = $get_xml->name;
+        if (empty($extension_name)) {
+            $extension_name = $extension;
+        }
+        $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/plugins/' . $subpath . '_' . JText::_($extension_name) . '.md';
+
+        if (!empty($get_xml->creationDate)) {
+            $extension_date = $get_xml->creationDate;
+        }
+        if (!empty($get_xml->author)) {
+            $extension_author = $get_xml->author;
+        }
+        if (!empty($get_xml->authorEmail)) {
+            $extension_authorEmail = $get_xml->authorEmail;
+        }
+
+        $handle = fopen($filename, 'w');
+        fwrite($handle, '# ' . JText::_($extension_name) . PHP_EOL);
+
+        fwrite($handle, '## Description' . PHP_EOL);
+        $healthy = ["<![CDATA[", "]]>"];
+        $yummy = ["", ""];
+        $description = str_replace($healthy, $yummy, $get_xml->description);
+        fwrite($handle, JText::_($description) . PHP_EOL);
+
+        fwrite($handle, '## Install the plugin' . PHP_EOL);
+        fwrite($handle, '**Step 1:** Download the extension to your local machine as a zip file package.' . PHP_EOL);
+        fwrite($handle, '**Step 2:** From the backend of your Joomla site (administration) select **Extensions >> Manager**, then Click the <b>Browse</b> button and select the extension package on your local machine. Then click the **Upload & Install** button to install module.' . PHP_EOL);
+        fwrite($handle, '**Step 3:** Go to **Extensions >> Plugin**, find and click on **' . JText::_($extension_name) . '**. Then enable it.' . PHP_EOL);
+
+        fwrite($handle, '## Configure the plugin' . PHP_EOL);
+        fwrite($handle, 'There are many options for you to customize your extension :' . PHP_EOL);
+
+        foreach ($get_xml->config->fields->fieldset as $fieldset) {
+            fwrite($handle, '### ' . JText::_($fieldset['name']) . PHP_EOL);
+            fwrite($handle, '| Option | Description | Value |' . PHP_EOL);
+            fwrite($handle, '| ------ | ----------- | ----- |' . PHP_EOL);
+
+            foreach ($fieldset->field as $field) {
+                $first = true;
+                $str = "";
+                foreach ($field->option as $option) {
+                    if ($first) {
+                        $str .= '`' . JText::_($option) . '`';
+                        $first = false;
+                    } else {
+                        $str .= ', `' . JText::_($option) . '`';
+                    }
+                }
+                $str = ($field['type'] != 'hidden') ? $str : '';
+                $default = (!empty($field['default'])) ? '(default:`' . JText::_($field['default']) . '`)' : '';
+                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+
+                fwrite($handle, $sLine . PHP_EOL);
+            }
+        }
+
+        fwrite($handle, '## Frequently Asked Questions' . PHP_EOL);
+        fwrite($handle, 'No questions for the moment' . PHP_EOL);
+
+        fwrite($handle, '## Uninstall the plugin' . PHP_EOL);
+        fwrite($handle, ' Once again, thank you so much for downloading our product. As I said at the beginning, I\'d be glad to help you if you have any questions relating to this product. No guarantees, but I\'ll do my best to assist.' . PHP_EOL);
+
+        $sLine = '> ###### Created on *' . JText::_($extension_date) . '* by *' . JText::_($extension_author) . '* ([' . JText::_($extension_authorEmail) . '](mailto:' . JText::_($extension_authorEmail) . '))';
+        fwrite($handle, $sLine . PHP_EOL);
+
+        fclose($handle);
+
+        return $filename;
+    }
+
+
+    /**
      * AllEventsClassMD::MakeMDObjects(
      *
      * @param string $extension
+     * @param string $category
+     * @param string $identifier
      * @return string
      */
     public static function MakeMDObjects($extension = "com_allevents", $category = "AllEvents", $identifier = "site")
@@ -401,12 +447,9 @@ class AllEventsClassMD
             //separate name&extension si besoin ...
             //remove the file extension and the dot from the filename
             $list[$index]['name'] = substr($original[$i], 0, -1 * (1 + strlen(JFile::getExt($original[$i]))));
-
             //add the extension
-            $list[$index]['ext'] = JFile::getExt($original[$i]);
-
+            // $list[$index]['ext'] = JFile::getExt($original[$i]);
             $msg .= '<br/>, ' . self::MakeMDObject($extension, $list[$index]['name'], $category, $identifier);
-
             $index++;
         }
         return $msg;
@@ -416,6 +459,9 @@ class AllEventsClassMD
      * AllEventsClassMD::MakeMDObject()
      *
      * @param string $extension
+     * @param string $object
+     * @param string $category
+     * @param string $identifier
      * @return string
      */
     public static function MakeMDObject($extension = "com_allevents", $object = "event", $category = "AllEvents", $identifier = "site")
@@ -424,35 +470,19 @@ class AllEventsClassMD
         $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
         $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
 
-        // $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
-        $get_xml = simplexml_load_file(JPATH_ROOT . '/components/' . $extension . '/models/forms/' . $object . '.xml');
-        $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/items/' . $object . '.md';
-        $handle = fopen($filename, 'w');
+        if (JFile::exists(JPATH_ROOT . '/components/' . $extension . '/models/forms/' . $object . '.xml')) {
+            $get_xml = simplexml_load_file(JPATH_ROOT . '/components/' . $extension . '/models/forms/' . $object . '.xml');
+            $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/items/' . $object . '.md';
+            $handle = fopen($filename, 'w');
 
-        $sLine = '# ' . $category . ' Object ' . $object;
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, '# ' . $category . ' Object ' . $object . PHP_EOL);
 
-        foreach ($get_xml->fieldset as $fieldset) {
-            $sLine = '### ' . JText::_($fieldset['name']);
-            fwrite($handle, $sLine . PHP_EOL);
+            foreach ($get_xml->fieldset as $fieldset) {
+                fwrite($handle, '### ' . JText::_($fieldset['name']) . PHP_EOL);
+                fwrite($handle, '| Option | Description | Type | Value |' . PHP_EOL);
+                fwrite($handle, '| ------ | ----------- | ---- | ----- |' . PHP_EOL);
 
-            $sLine = ' | Option | Description | Type | Value |';
-            fwrite($handle, $sLine . PHP_EOL);
-            $sLine = ' | ------ | ----------- | ----- | ----- |';
-            fwrite($handle, $sLine . PHP_EOL);
-
-            foreach ($fieldset->field as $field) {
-                // if (!isset($field['aeimage'])) {
-                if ($field['type'] == 'AETitleImg') {
-                    if ($field['aeicon'] != 'info-circle') {
-                        $sLine = '## <i class="fa fa-' . JText::_($field['aeicon']) . '" aria-hidden="true"></i> ' . JText::_($field['label']) . ' ...';
-                        fwrite($handle, $sLine . PHP_EOL);
-                        $sLine = ' | Option | Description | Type | Value |';
-                        fwrite($handle, $sLine . PHP_EOL);
-                        $sLine = ' | ------ | ----------- | ----- | ----- |';
-                        fwrite($handle, $sLine . PHP_EOL);
-                    }
-                } else {
+                foreach ($fieldset->field as $field) {
                     $first = true;
                     $str = "";
                     foreach ($field->option as $option) {
@@ -463,36 +493,48 @@ class AllEventsClassMD
                             $str .= ', `' . JText::_($option) . '`';
                         }
                     }
-                    if (isset($field['default'])) {
-                        $sLine = '| &nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . ' (default: `' . JText::_($field['default']) . '`)' . '|';
-                    } else {
-                        $sLine = '| &nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . (empty($str) ? '&nbsp;' : $str) . '|';
-                    }
+                    $default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
+                    $sLine = '| &nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . $default . '|';
                     fwrite($handle, $sLine . PHP_EOL);
                 }
-                // }
             }
+            fclose($handle);
+            return (JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
+        } else {
+            return ('* NOT EXIST : ' . JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
         }
-        fclose($handle);
-        return (JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
+
     }
 
     /**
-     * AllEventsClassMD::MakeMDConfig()
+     * AllEventsClassMD::MakeMDComponent(
      *
      * @param string $extension
+     * @param string $category
+     * @param string $identifier
      * @return string
      */
-    public static function MakeMDConfig($extension = "com_allevents", $category = "AllEvents")
+    public static function MakeMDComponent($extension = "com_allevents", $category = "AllEvents", $identifier = "site")
     {
-        $lang = JFactory::getLanguage();
-        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
-        $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
+        $msg = "";
+        $list = array();
 
-        $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
-        $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/config_' . $extension . '.md';
-        $handle = fopen($filename, 'w');
+<<<<<<< HEAD
+        //get the list of all .xml files in the folder
+        $original = JFolder::files(JPATH_ROOT . '/administrator/components/' . $extension . '/', '.xml');
 
+        //create the final list that contains name of files
+        $total = count($original);
+        $index = 0;
+        for ($i = 0; $i < $total; $i++) {
+            //separate name&extension si besoin ...
+            //remove the file extension and the dot from the filename
+            $list[$index]['name'] = substr($original[$i], 0, -1 * (1 + strlen(JFile::getExt($original[$i]))));
+            //add the extension
+            // $list[$index]['ext'] = JFile::getExt($original[$i]);
+            $msg .= '<br/>, ' . self::MakeMDExtension($extension, $category, $list[$index]['name']);
+            $index++;
+=======
         $sLine = '# Component Configuration';
                            fwrite($handle, $sLine . PHP_EOL);
 
@@ -535,84 +577,90 @@ class AllEventsClassMD
                     }
                 
             }
+>>>>>>> origin/master
         }
-        fclose($handle);
-        return (JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
+        return $msg;
     }
 
     /**
      * AllEventsClassMD::MakeMDExtension()
      *
      * @param string $extension
+     * @param string $category
      * @param string $name
      * @return int
      * @internal param mixed $entity
      * @internal param mixed $entities
      */
-    public static function MakeMDExtension($extension = "com_allevents", $name = "allevents")
+    public static function MakeMDExtension($extension = "com_allevents", $category = "AllEvents", $name = 'allevents')
     {
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/' . $name . '.xml');
-        $filename = JPATH_ROOT . '/documentation/docs/AllEvents/' . $extension . '.md';
+        $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/' . $extension . '.md';
         $handle = fopen($filename, 'w');
 
-        $sLine = '# AllEvents Component';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = '![](//documentation.allevents3.com/docs/.images/allevents-hauteur.png)';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = '![](https://img.shields.io/badge/AllEvents-v3.4-blue.svg) &nbsp; ![](https://img.shields.io/badge/licence-GNU--GPL-green.svg)<br/><br/>';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = 'Your personnal Joomla calendar !';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = 'The AllEvents component provides 18 customizable layouts for your Joomla site.';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = '![](https://www.allevents3.com//images/formulaire/hh.png)';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = '***';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+        fwrite($handle, '# ' . $extension . ' Component' . PHP_EOL);
 
-        $sLine = '## Modules';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = '<div class="begin-examples"></div>';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+        fwrite($handle, '## Modules' . PHP_EOL);
         foreach ($get_xml->modules->module as $module) {
-            $sLine = '### ' . $module['name'];
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-
-            if ($module['aetype'] == 'Starter') {
-                $sLine = '![](https://img.shields.io/badge/Version-starter-green.svg)<br/><br/>';
-            } else {
-                $sLine = '![](https://img.shields.io/badge/Version-premium-yellow.svg)<br/><br/>';
-            }
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-
-            $sLine = '<a class="btn btn-success" href="https://documentation.allevents3.com/">Discover</a>';
-            $sLine .= '&nbsp;or [Live Demo](https://www.allevents3.com/en/demo/' . $module['module'] . ')';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, '### ' . $module['name'] . PHP_EOL);
         }
-        $sLine = '<div class="end-examples"></div>';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
 
-        $sLine = '## Plugins';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-        $sLine = '<div class="begin-examples"></div>';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+        fwrite($handle, '## Plugins' . PHP_EOL);
         foreach ($get_xml->plugins->plugin as $plugin) {
-            $sLine = '### ' . $plugin['name'];
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-
-            if ($plugin['aetype'] == 'Starter') {
-                $sLine = '![](https://img.shields.io/badge/Version-starter-green.svg)<br/><br/>';
-            } else {
-                $sLine = '![](https://img.shields.io/badge/Version-premium-yellow.svg)<br/><br/>';
-            }
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
-
-            $sLine = '<a class="btn btn-success" href="https://documentation.allevents3.com/">Discover</a>';
-            fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
+            fwrite($handle, '### ' . $plugin['name'] . PHP_EOL);
         }
-        $sLine = '<div class="end-examples"></div>';
-        fwrite($handle, $sLine . PHP_EOL . PHP_EOL);
         fclose($handle);
         return (JPATH_ROOT . '/administrator/components/' . $extension . '/' . $name . '.xml');
+    }
+
+    /**
+     * AllEventsClassMD::MakeMDConfig()
+     *
+     * @param string $extension
+     * @param string $category
+     * @return string
+     */
+    public static function MakeMDConfig($extension = "com_allevents", $category = "AllEvents")
+    {
+        $lang = JFactory::getLanguage();
+        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
+        $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
+
+        $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
+        $filename = JPATH_ROOT . '/documentation/docs/' . $category . '/config_' . $extension . '.md';
+        $handle = fopen($filename, 'w');
+
+        fwrite($handle, '# Component Configuration' . PHP_EOL);
+        fwrite($handle, '| Option | Description | Value |' . PHP_EOL);
+        fwrite($handle, '| ------ | ----------- | ----- |' . PHP_EOL);
+
+        foreach ($get_xml->fieldset->field as $field) {
+            if ($field['type'] == 'rules') {
+                $get_rules = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/access.xml');
+                fwrite($handle, '## ' . JText::_($field['label']) . ' ...' . PHP_EOL);
+                fwrite($handle, ' | Action | Description |' . PHP_EOL);
+                fwrite($handle, ' | ------ | ----------- |' . PHP_EOL);
+                foreach ($get_rules->section->action as $action) {
+                    $sLine = ' | ' . JText::_($action['title']) . ' | ' . JText::_($action['description']) . ' | ';
+                    fwrite($handle, $sLine . PHP_EOL);
+                }
+            } else {
+                $first = true;
+                $str = "";
+                foreach ($field->option as $option) {
+                    if ($first) {
+                        $str .= '`' . JText::_($option) . '`';
+                        $first = false;
+                    } else {
+                        $str .= ', `' . JText::_($option) . '`';
+                    }
+                }
+                $default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
+                $sLine = '| &nbsp;' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+                fwrite($handle, $sLine . PHP_EOL);
+            }
+        }
+        fclose($handle);
+        return (JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
     }
 }

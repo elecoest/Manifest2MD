@@ -45,7 +45,7 @@ class Manifest2mdTableextension extends JTable
     public function bind($array, $ignore = '')
     {
         $input = JFactory::getApplication()->input;
-        $task = $input->getString('task', '');
+        //$task = $input->getString('task', '');
 
         if ($array['id'] == 0 && empty($array['created_by'])) {
             $array['created_by'] = JFactory::getUser()->id;
@@ -191,7 +191,7 @@ class Manifest2mdTableextension extends JTable
         if ($checkin && (count($pks) == $this->_db->getAffectedRows())) {
             // Checkin each row.
             foreach ($pks as $pk) {
-                $this->checkin($pk);
+                $this->checkIn($pk);
             }
         }
 

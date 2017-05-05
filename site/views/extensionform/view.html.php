@@ -41,7 +41,7 @@ class Manifest2mdViewExtensionform extends JViewLegacy
     public function display($tpl = null)
     {
         $app = JFactory::getApplication();
-        $user = JFactory::getUser();
+        //$user = JFactory::getUser();
 
         $this->state = $this->get('State');
         $this->item = $this->get('Data');
@@ -100,11 +100,11 @@ class Manifest2mdViewExtensionform extends JViewLegacy
         }
 
         if ($this->params->get('menu-meta_keywords')) {
-            $this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+            $this->document->setMetaData('keywords', $this->params->get('menu-meta_keywords'));
         }
 
         if ($this->params->get('robots')) {
-            $this->document->setMetadata('robots', $this->params->get('robots'));
+            $this->document->setMetaData('robots', $this->params->get('robots'));
         }
     }
 }

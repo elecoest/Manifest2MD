@@ -19,7 +19,6 @@
         <field name="template_view" type="editor" filter="JComponentHelper::filterText"
                label="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_VIEW" description="COM_MANIFEST2MD_FORM_DESC_TEMPLATE_VIEW"
                hint="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_VIEW"/>
-
     </fieldset>
 
     <fieldset name="permissions" description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL">

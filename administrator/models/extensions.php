@@ -104,7 +104,7 @@ class Manifest2mdModelExtensions extends JModelList
         $query->where("state = 1");
         $query->where("type = 'module'");
 
-        $query->select('`category`.title AS `category`');
+        $query->select('`category`.alias AS `category`');
         $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`catid`');
 
         $db->setQuery($query);
@@ -127,7 +127,7 @@ class Manifest2mdModelExtensions extends JModelList
         $query->where("state = 1");
         $query->where("type = 'plugin'");
 
-        $query->select('`category`.title AS `category`');
+        $query->select('`category`.alias AS `category`');
         $query->join('LEFT', '#__categories AS `category` ON `category`.id = a.`catid`');
 
         $db->setQuery($query);
@@ -254,11 +254,10 @@ class Manifest2mdModelExtensions extends JModelList
             if (stripos($search, 'id:') === 0) {
                 $query->where('a.id = ' . (int)substr($search, 3));
             } else {
-                $search = $db->Quote('%' . $db->escape($search, true) . '%');
+                $search = $db->quote('%' . $db->escape($search, true) . '%');
                 $query->where('( a.name LIKE ' . $search . '  OR  a.type LIKE ' . $search . '  OR  a.element LIKE ' . $search . '  OR  a.folder LIKE ' . $search . '  OR  a.identifier LIKE ' . $search . '  OR  a.doc_element LIKE ' . $search . '  OR  a.specific_home LIKE ' . $search . '  OR  a.catid LIKE ' . $search . ' )');
             }
         }
-
 
         //Filtering type
         $filter_type = $this->state->get("filter.type");
