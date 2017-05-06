@@ -124,6 +124,7 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
         require_once(JPATH_SITE . '/administrator/components/com_manifest2md/helpers/MakeMD.php');
         $g_se_MD = new AllEventsClassMD();
         $g_se_MD->setRoot(JPATH_ROOT . $params['doc_home']);
+        $g_se_MD->setLanguage($params['doc_language']);
 
         $model = $this->getModel('extensions');
         $items = $model->getComponentsConfig();

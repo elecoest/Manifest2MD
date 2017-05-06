@@ -31,6 +31,7 @@ class AllEventsHelperParam
         }
 
         $params['doc_home'] = isset($params['doc_home']) ? $params['doc_home'] : "";
+        $params['doc_language'] = isset($params['doc_language']) ? $params['doc_language'] : "en-GB";
         $params['template_config'] = isset($params['template_config']) ? $params['template_config'] : "";
         $params['template_item'] = isset($params['template_item']) ? $params['template_item'] : "";
         $params['template_module'] = isset($params['template_module']) ? $params['template_module'] : "";

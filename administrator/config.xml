@@ -4,6 +4,8 @@
         <field name="doc_home" type="text" size="100" maxlength="100" filter="safehtml" default="/documentation"
                label="COM_MANIFEST2MD_FORM_LBL_DOC_HOME" description="COM_MANIFEST2MD_FORM_DESC_DOC_HOME"
                hint="COM_MANIFEST2MD_FORM_LBL_DOC_HOME"/>
+        <field name="doc_language" type="language" client="site" default="en-GB" label="COM_MANIFEST2MD_FORM_LBL_LANG"
+               description="COM_MANIFEST2MD_FORM_DESC_LANG"/>
         <field name="template_config" type="editor" filter="JComponentHelper::filterText"
                label="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_CONFIG" description="COM_MANIFEST2MD_FORM_DESC_TEMPLATE_CONFIG"
                hint="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_CONFIG"/>

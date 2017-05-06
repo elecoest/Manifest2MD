@@ -18,6 +18,7 @@ jimport('joomla.filesystem.folder');
 class AllEventsClassMD
 {
     protected $root = null;
+    protected $language = 'en-GB';
 
     /**
      * AllEventsClassMD::MakeMDViews(
@@ -63,8 +64,8 @@ class AllEventsClassMD
     public function MakeMDView($category = "AllEvents", $extension, $subpath = "")
     {
         $lang = JFactory::getLanguage();
-        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
-        $lang->load($extension, JPATH_SITE, 'en-GB', true);
+        $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
+        $lang->load($extension, JPATH_SITE, $this->language, true);
 
         $db = JFactory::getDbo();
         $extension_date = "";
@@ -216,8 +217,8 @@ class AllEventsClassMD
     public function MakeMDObject($category = "AllEvents", $extension = "com_allevents", $object = "event", $identifier = "site")
     {
         $lang = JFactory::getLanguage();
-        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
-        $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
+        $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
+        $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, $this->language, true);
 
         if (JFile::exists(JPATH_ROOT . '/components/' . $extension . '/models/forms/' . $object . '.xml')) {
             if ($identifier == "site") {
@@ -334,8 +335,8 @@ class AllEventsClassMD
     public function MakeMDModule($category = "AllEvents", $extension = "mod_aesearch")
     {
         $lang = JFactory::getLanguage();
-        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
-        $lang->load($extension, JPATH_SITE, 'en-GB', true);
+        $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
+        $lang->load($extension, JPATH_SITE, $this->language, true);
 
         $db = JFactory::getDbo();
         $extension_date = "";
@@ -449,10 +450,10 @@ class AllEventsClassMD
     public function MakeMDPlugin($category = "AllEvents", $extension = "", $subpath = "")
     {
         $lang = JFactory::getLanguage();
-        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
-        $lang->load($extension, JPATH_SITE, 'en-GB', true);
-        $lang->load('plg_' . $subpath . '_' . $extension, JPATH_SITE, 'en-GB', true);
-        $lang->load('plg_' . $subpath . '_' . $extension, JPATH_ADMINISTRATOR, 'en-GB', true);
+        $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
+        $lang->load($extension, JPATH_SITE, $this->language, true);
+        $lang->load('plg_' . $subpath . '_' . $extension, JPATH_SITE, $this->language, true);
+        $lang->load('plg_' . $subpath . '_' . $extension, JPATH_ADMINISTRATOR, $this->language, true);
 
         $db = JFactory::getDbo();
         $extension_date = "";
@@ -569,8 +570,8 @@ class AllEventsClassMD
     public function MakeMDConfig($category = "AllEvents", $extension = "com_allevents")
     {
         $lang = JFactory::getLanguage();
-        $lang->load($extension, JPATH_ADMINISTRATOR, 'en-GB', true);
-        $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
+        $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
+        $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, $this->language, true);
 
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
         $filename = $this->root . $category . '/config_' . $extension . '.md';
@@ -640,12 +641,20 @@ class AllEventsClassMD
     }
 
     /**
+     * @param string $lang
+     */
+    function setLanguage($lang = 'en-GB')
+    {
+        $this->language = (empty($lang)) ? 'en-GB' : $lang;
+    }
+
+    /**
      * @param string $url
      */
     function setRoot($url = JPATH_ROOT . '/documentation/docs/')
     {
         $this->root = $url;
-        $this->root = rtrim($this->root, '/') . '/';
+        $this->root = rtrim($this->root, '/') . '/' . $this->language . '/';
     }
 }
 
