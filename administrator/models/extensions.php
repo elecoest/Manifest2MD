@@ -75,7 +75,7 @@ class Manifest2mdModelExtensions extends JModelList
     {
         $db = $this->getDbo();
         $query = $db->getQuery(true);
-        $query->select("a.element as element");
+        $query->select("a.*");
         $query->from('`#__manifest2md_extensions` AS a');
         $query->where("state = 1");
         $query->where("doc_element = 'config'");
@@ -99,7 +99,7 @@ class Manifest2mdModelExtensions extends JModelList
     {
         $db = $this->getDbo();
         $query = $db->getQuery(true);
-        $query->select("a.element as element");
+        $query->select("a.*");
         $query->from('`#__manifest2md_extensions` AS a');
         $query->where("state = 1");
         $query->where("type = 'module'");
@@ -122,7 +122,7 @@ class Manifest2mdModelExtensions extends JModelList
     {
         $db = $this->getDbo();
         $query = $db->getQuery(true);
-        $query->select("a.element as element, a.folder as folder");
+        $query->select("a.*");
         $query->from('`#__manifest2md_extensions` AS a');
         $query->where("state = 1");
         $query->where("type = 'plugin'");

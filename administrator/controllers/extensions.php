@@ -117,29 +117,39 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
      */
     function MakeMD()
     {
+        require_once(JPATH_SITE . '/administrator/components/com_manifest2md/helpers/aeparam.php');
+        $g_params = new AllEventsHelperParam();
+        $params = $g_params->getGlobalParam();
+
         require_once(JPATH_SITE . '/administrator/components/com_manifest2md/helpers/MakeMD.php');
         $g_se_MD = new AllEventsClassMD();
+        $g_se_MD->setRoot(JPATH_ROOT . $params['doc_home']);
 
         $model = $this->getModel('extensions');
         $items = $model->getComponentsConfig();
         $msg = '';
         foreach ($items as $item) {
             $g_se_MD->CheckFolder($item->category);
-            $msg .= '<br/>, ' . $g_se_MD->MakeMDConfig($item->element, $item->category);
-            $msg .= '<br/>, ' . $g_se_MD->MakeMDObjects($item->element, $item->category);
-            $msg .= '<br/>, ' . $g_se_MD->MakeMDViews($item->element, $item->category);
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDConfig($item->category, $item->element);
+            if ($item->identifier == 'both') {
+                $msg .= '<br/>, ' . $g_se_MD->MakeMDObjects($item->category, $item->element, 'site');
+                $msg .= '<br/>, ' . $g_se_MD->MakeMDObjects($item->category, $item->element, 'administrator');
+            } else {
+                $msg .= '<br/>, ' . $g_se_MD->MakeMDObjects($item->category, $item->element, $item->identifier);
+            }
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDViews($item->category, $item->element);
         }
 
         $items = $model->getModules();
         foreach ($items as $item) {
             $g_se_MD->CheckFolder($item->category);
-            $msg .= '<br/>, ' . $g_se_MD->MakeMDModule($item->element, $item->category);
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDModule($item->category, $item->element);
         }
 
         $items = $model->getPlugins();
         foreach ($items as $item) {
             $g_se_MD->CheckFolder($item->category);
-            $msg .= '<br/>, ' . $g_se_MD->MakeMDPlugin($item->element, $item->folder, $item->category);
+            $msg .= '<br/>, ' . $g_se_MD->MakeMDPlugin($item->category, $item->element, $item->folder);
         }
 
         $this->setRedirect('index.php?option=com_manifest2md', $msg);
