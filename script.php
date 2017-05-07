@@ -121,7 +121,7 @@ class com_Manifest2MDInstallerScript
         $db = JFactory::getDbo();
 
         //$sqlorder = new array();
-        $sqlorder[] = ["ALTER TABLE `a2ek4_manifest2md_extensions` CHANGE `category` `catid` INT(11) NOT NULL;", "extensions.catid", false];
+        $sqlorder[] = ["ALTER TABLE `#__manifest2md_extensions` CHANGE `category` `catid` INT(11) NOT NULL;", "extensions.catid", false];
 
         //version 3.4
         $elements = [];

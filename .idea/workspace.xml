@@ -3,14 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bbf1a6a7-fbb9-4eba-be7d-093b87b10509" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/administrator/config.xml" afterPath="$PROJECT_DIR$/administrator/config.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/administrator/controllers/extensions.php" afterPath="$PROJECT_DIR$/administrator/controllers/extensions.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/administrator/helpers/MakeMD.php" afterPath="$PROJECT_DIR$/administrator/helpers/MakeMD.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/administrator/helpers/aeparam.php" afterPath="$PROJECT_DIR$/administrator/helpers/aeparam.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/administrator/tables/extension.php" afterPath="$PROJECT_DIR$/administrator/tables/extension.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/languages/administrator/en-GB/en-GB.com_manifest2md.ini" afterPath="$PROJECT_DIR$/languages/administrator/en-GB/en-GB.com_manifest2md.ini" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/models/extension.php" afterPath="$PROJECT_DIR$/site/models/extension.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/site/models/extensionform.php" afterPath="$PROJECT_DIR$/site/models/extensionform.php" />
     </list>
     <ignored path="com_manifest2md.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -240,12 +232,12 @@
       <workItem from="1493913265837" duration="977000" />
       <workItem from="1493960424419" duration="688000" />
       <workItem from="1494002611383" duration="1081000" />
-      <workItem from="1494061197067" duration="4219000" />
+      <workItem from="1494061197067" duration="4579000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7762000" />
+    <option name="totallyTimeSpent" value="8122000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />

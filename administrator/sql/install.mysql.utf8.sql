@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `#__manifest2md_extensions` (
 `identifier` VARCHAR(255)  NOT NULL ,
 `doc_element` VARCHAR(255)  NOT NULL ,
 `specific_home` VARCHAR(255)  NOT NULL ,
-`category` INT(11)  NOT NULL ,
+`catid` INT(11)  NOT NULL ,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT COLLATE=utf8mb4_unicode_ci;
 
