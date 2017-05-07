@@ -92,7 +92,7 @@ class AllEventsClassMD
             $extension_authorEmail = $decode->authorEmail;
         }
 
-        $get_xml = simplexml_load_file(JPATH_ROOT . '\\components\\' . $extension . '\\views\\' . $subpath . '\\tmpl\\default.xml');
+        $get_xml = simplexml_load_file(JPATH_ROOT . '/components/' . $extension . '/views/' . $subpath . '/tmpl/default.xml');
         $extension_name = $get_xml->layout['title'];
         if (empty($extension_name)) {
             $extension_name = 'views_' . $subpath;
@@ -169,7 +169,7 @@ class AllEventsClassMD
             fclose($handle);
 
         }
-        return $filename;
+        return JPATH_ROOT . '/components/' . $extension . '/views/' . $subpath . '/tmpl/default.xml';
     }
 
     /**
@@ -222,55 +222,51 @@ class AllEventsClassMD
         $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
         $lang->load($extension . '.sys', JPATH_ADMINISTRATOR, $this->language, true);
 
-        if (JFile::exists(JPATH_ROOT . '/components/' . $extension . '/models/forms/' . $object . '.xml')) {
-            if ($identifier == "site") {
-                $get_xml = simplexml_load_file(JPATH_ROOT . '/components/' . $extension . '/models/forms/' . $object . '.xml');
-            } elseif ($identifier == "administrator") {
-                $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
-            }
-            $filename = $this->root . $category . '/items/' . $identifier . '_' . $object . '.md';
-
-            //parameters
-            $parameters = "";
-            foreach ($get_xml->fieldset as $fieldset) {
-                $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
-                $parameters .= '| Option | Description | Type | Value |' . PHP_EOL;
-                $parameters .= '| ------ | ----------- | ---- | ----- |' . PHP_EOL;
-
-                foreach ($fieldset->field as $field) {
-                    $first = true;
-                    $str = "";
-                    foreach ($field->option as $option) {
-                        if ($first) {
-                            $str .= '`' . JText::_($option) . '`';
-                            $first = false;
-                        } else {
-                            $str .= ', `' . JText::_($option) . '`';
-                        }
-                    }
-                    $default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
-                    $sLine = '| &nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . $default . '|';
-                    $parameters .= $sLine . PHP_EOL;
-                }
-            }
-
-            $content = $this->params['template_item'];
-
-            // merge
-            $content = str_replace('{category}', $category, $content);
-            $content = str_replace('{object}', $object, $content);
-            $content = str_replace('{parameters}', $parameters, $content);
-            $content = str_replace('{language}', $this->language, $content);
-
-            // final writing
-            $handle = fopen($filename, 'w');
-            fwrite($handle, $content);
-            fclose($handle);
-
-            return (JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
-        } else {
-            return ('* NOT EXIST : ' . JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
+        if ($identifier == "site") {
+            $get_xml = simplexml_load_file(JPATH_ROOT . '/components/' . $extension . '/models/forms/' . $object . '.xml');
+        } elseif ($identifier == "administrator") {
+            $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
         }
+        $filename = $this->root . $category . '/items/' . $identifier . '_' . $object . '.md';
+
+        //parameters
+        $parameters = "";
+        foreach ($get_xml->fieldset as $fieldset) {
+            $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
+            $parameters .= '| Option | Description | Type | Value |' . PHP_EOL;
+            $parameters .= '| ------ | ----------- | ---- | ----- |' . PHP_EOL;
+
+            foreach ($fieldset->field as $field) {
+                $first = true;
+                $str = "";
+                foreach ($field->option as $option) {
+                    if ($first) {
+                        $str .= '`' . JText::_($option) . '`';
+                        $first = false;
+                    } else {
+                        $str .= ', `' . JText::_($option) . '`';
+                    }
+                }
+                $default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
+                $sLine = '| &nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . $default . '|';
+                $parameters .= $sLine . PHP_EOL;
+            }
+        }
+
+        $content = $this->params['template_item'];
+
+        // merge
+        $content = str_replace('{category}', $category, $content);
+        $content = str_replace('{object}', $object, $content);
+        $content = str_replace('{parameters}', $parameters, $content);
+        $content = str_replace('{language}', $this->language, $content);
+
+        // final writing
+        $handle = fopen($filename, 'w');
+        fwrite($handle, $content);
+        fclose($handle);
+
+        return (JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
     }
 
     /**
@@ -390,9 +386,11 @@ class AllEventsClassMD
         }
 
         // description
+        $description = trim($get_xml->description);
         $healthy = ["<![CDATA[", "]]>"];
         $yummy = ["", ""];
-        $description = str_replace($healthy, $yummy, JText::_($get_xml->description));
+        $description = str_replace($healthy, $yummy, $description);
+        $description = JText::_($description);
 
         // parameters
         $parameters = '';
@@ -505,9 +503,11 @@ class AllEventsClassMD
         }
 
         // description
+        $description = trim($get_xml->description);
         $healthy = ["<![CDATA[", "]]>"];
         $yummy = ["", ""];
-        $description = str_replace($healthy, $yummy, JText::_($get_xml->description));
+        $description = str_replace($healthy, $yummy, $description);
+        $description = JText::_($description);
 
         // parameters
         $parameters = "";
