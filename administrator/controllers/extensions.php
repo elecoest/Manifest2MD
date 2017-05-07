@@ -117,6 +117,8 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
      */
     function MakeMD()
     {
+        $msg = '';
+
         require_once(JPATH_SITE . '/administrator/components/com_manifest2md/helpers/aeparam.php');
         $g_params = new AllEventsHelperParam();
         $params = $g_params->getGlobalParam();
@@ -124,13 +126,14 @@ class Manifest2mdControllerExtensions extends JControllerAdmin
         require_once(JPATH_SITE . '/administrator/components/com_manifest2md/helpers/MakeMD.php');
         $g_se_MD = new AllEventsClassMD();
 
-		// langugag before doc_home
+        $g_se_MD->setParams($params);
+        // langugag before doc_home
         $g_se_MD->setLanguage($params['doc_language']);
         $g_se_MD->setRoot(JPATH_ROOT . $params['doc_home']);
 
         $model = $this->getModel('extensions');
         $items = $model->getComponentsConfig();
-        $msg = '';
+
         foreach ($items as $item) {
             $g_se_MD->CheckFolder($item->category);
             $msg .= '<br/>, ' . $g_se_MD->MakeMDConfig($item->category, $item->element);

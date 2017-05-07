@@ -6,19 +6,19 @@
                hint="COM_MANIFEST2MD_FORM_LBL_DOC_HOME"/>
         <field name="doc_language" type="language" client="site" default="en-GB" label="COM_MANIFEST2MD_FORM_LBL_LANG"
                description="COM_MANIFEST2MD_FORM_DESC_LANG"/>
-        <field name="template_config" type="editor" filter="JComponentHelper::filterText"
+        <field name="template_config" type="textarea" rows="10" cols="10" filter="JComponentHelper::filterText"
                label="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_CONFIG" description="COM_MANIFEST2MD_FORM_DESC_TEMPLATE_CONFIG"
                hint="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_CONFIG"/>
-        <field name="template_item" type="editor" filter="JComponentHelper::filterText"
+        <field name="template_item" type="textarea" rows="10" cols="10" filter="JComponentHelper::filterText"
                label="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_ITEM" description="COM_MANIFEST2MD_FORM_DESC_TEMPLATE_ITEM"
                hint="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_ITEM"/>
-        <field name="template_view" type="editor" filter="JComponentHelper::filterText"
+        <field name="template_view" type="textarea" rows="10" cols="10" filter="JComponentHelper::filterText"
                label="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_VIEW" description="COM_MANIFEST2MD_FORM_DESC_TEMPLATE_VIEW"
                hint="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_VIEW"/>
-        <field name="template_module" type="editor" filter="JComponentHelper::filterText"
+        <field name="template_module" type="textarea" rows="10" cols="10" filter="JComponentHelper::filterText"
                label="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_MODULE" description="COM_MANIFEST2MD_FORM_DESC_TEMPLATE_MODULE"
                hint="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_MODULE"/>
-        <field name="template_plugin" type="editor" filter="JComponentHelper::filterText"
+        <field name="template_plugin" type="textarea" rows="10" cols="10" filter="JComponentHelper::filterText"
                label="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_PLUGIN" description="COM_MANIFEST2MD_FORM_DESC_TEMPLATE_PLUGIN"
                hint="COM_MANIFEST2MD_FORM_LBL_TEMPLATE_PLUGIN"/>
     </fieldset>
