@@ -231,7 +231,9 @@ class AllEventsClassMD
 
         //parameters
         $parameters = "";
-        foreach ($get_xml->fieldset as $fieldset) {
+		$home = null ; 
+		$home = (empty($get_xml->fieldset)) ? $get_xml  : $get_xml->fieldset ; 
+        foreach ($home as $fieldset) {
             $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
             $parameters .= '| Option | Description | Type | Value |' . PHP_EOL;
             $parameters .= '| ------ | ----------- | ---- | ----- |' . PHP_EOL;
@@ -453,8 +455,8 @@ class AllEventsClassMD
     public function MakeMDPlugin($category = "AllEvents", $extension = "", $subpath = "")
     {
         $lang = JFactory::getLanguage();
-        $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
-        $lang->load($extension, JPATH_SITE, $this->language, true);
+        // $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
+        // $lang->load($extension, JPATH_SITE, $this->language, true);
         $lang->load('plg_' . $subpath . '_' . $extension, JPATH_SITE, $this->language, true);
         $lang->load('plg_' . $subpath . '_' . $extension, JPATH_ADMINISTRATOR, $this->language, true);
 
