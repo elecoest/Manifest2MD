@@ -89,7 +89,7 @@
     <!-- Update servers -->
     <updateservers>
         <server type="extension" priority="1" name="Manifest2md Update Server">
-            https://github.com/elecoest/AE2MD/archive/manifest2md_update.xml
+            https://github.com/elecoest/Manifest2MD/archive/manifest2md_update.xml
         </server>
     </updateservers>
 
