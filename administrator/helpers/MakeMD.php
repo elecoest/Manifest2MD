@@ -45,7 +45,7 @@ class AllEventsClassMD
             if ($file == '.' || $file == '..') continue;
             $dir = $base_dir . DIRECTORY_SEPARATOR . $file;
             if (is_dir($dir)) {
-                $msg .= '<br/>, ' . self::MakeMDView($category, $extension, $file);
+                $msg .= '<br/>, ' . self::MakeMDView($category, $extension, $file, $identifier);
             }
         }
 
@@ -62,7 +62,7 @@ class AllEventsClassMD
      * @internal param mixed $entity
      * @internal param mixed $entities
      */
-    public function MakeMDView($category = "AllEvents", $extension, $subpath = "")
+    public function MakeMDView($category = "AllEvents", $extension, $subpath = "", $identifier="site")
     {
         $lang = JFactory::getLanguage();
         $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
@@ -98,7 +98,7 @@ class AllEventsClassMD
             $extension_name = 'views_' . $subpath;
         }
         $extension_name = JText::_($extension_name);
-        $filename = $this->root . $category . '/views/' . $extension_name . '.md';
+        $filename = $this->root . $category . '/views/' . $identifier . '/' . $extension_name . '.md';
 
         if (!empty($get_xml->creationDate)) {
             $extension_date = $get_xml->creationDate;
@@ -121,8 +121,8 @@ class AllEventsClassMD
 
             //parameters
             $parameters = "";
-            foreach ($get_xml->state->fields as $fieldset) {
-                if (($fieldset['name'] == 'request') || ($fieldset['name'] == 'params')) {
+            foreach ($get_xml->fields as $fieldset) {				
+			    if (($fieldset['name'] == 'request') || ($fieldset['name'] == 'params')) {
                     $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
                     $parameters .= '| Option | Description | Value |' . PHP_EOL;
                     $parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
@@ -227,7 +227,7 @@ class AllEventsClassMD
         } elseif ($identifier == "administrator") {
             $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
         }
-        $filename = $this->root . $category . '/items/' . $identifier . '_' . $object . '.md';
+        $filename = $this->root . $category . '/items/' . $identifier . '/' . $object . '.md';
 
         //parameters
         $parameters = "";
@@ -574,37 +574,40 @@ class AllEventsClassMD
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
         $filename = $this->root . $category . '/config_' . $extension . '.md';
 
-        // parameters
-        $parameters = '| Option | Description | Value |' . PHP_EOL;
-        $parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
-
-        foreach ($get_xml->fieldset->field as $field) {
-            if ($field['type'] == 'rules') {
-                $get_rules = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/access.xml');
-                $parameters .= '## ' . JText::_($field['label']) . ' ...' . PHP_EOL;
-                $parameters .= '| Action | Description |' . PHP_EOL;
-                $parameters .= '| ------ | ----------- |' . PHP_EOL;
-                foreach ($get_rules->section->action as $action) {
-                    $sLine = ' | ' . JText::_($action['title']) . ' | ' . JText::_($action['description']) . ' | ';
-                    $parameters .= $sLine . PHP_EOL;
-                }
-            } else {
-                $first = true;
-                $str = "";
-                foreach ($field->option as $option) {
-                    if ($first) {
-                        $str .= '`' . JText::_($option) . '`';
-                        $first = false;
-                    } else {
-                        $str .= ', `' . JText::_($option) . '`';
-                    }
-                }
-                $default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
-                $sLine = '| &nbsp;' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
-                $parameters .= $sLine . PHP_EOL;
-            }
-        }
-
+		$parameters = "" ; 
+		foreach ($get_xml->fieldset as $fieldset) {			
+			// parameters
+			$parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
+			$parameters .= '| Option | Description | Value |' . PHP_EOL;
+			$parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
+	
+			foreach ($fieldset->field as $field) {
+				if ($field['type'] == 'rules') {
+					$get_rules = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/access.xml');
+					$parameters .= '## ' . JText::_($field['label']) . ' ...' . PHP_EOL;
+					$parameters .= '| Action | Description |' . PHP_EOL;
+					$parameters .= '| ------ | ----------- |' . PHP_EOL;
+					foreach ($get_rules->section->action as $action) {
+						$sLine = ' | ' . JText::_($action['title']) . ' | ' . JText::_($action['description']) . ' | ';
+						$parameters .= $sLine . PHP_EOL;
+					}
+				} else {
+					$first = true;
+					$str = "";
+					foreach ($field->option as $option) {
+						if ($first) {
+							$str .= '`' . JText::_($option) . '`';
+							$first = false;
+						} else {
+							$str .= ', `' . JText::_($option) . '`';
+						}
+					}
+					$default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
+					$sLine = '| &nbsp;' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+					$parameters .= $sLine . PHP_EOL;
+				}
+			}
+		}
         $content = $this->params['template_config'];
 
         // merge
@@ -635,6 +638,14 @@ class AllEventsClassMD
         $folder[3][1] = $this->root . $category . '/plugins/';
         $folder[4][0] = 'modules';
         $folder[4][1] = $this->root . $category . '/modules/';
+        $folder[5][0] = 'items/site';
+        $folder[5][1] = $this->root . $category . '/items/site';
+        $folder[6][0] = 'items/administrator';
+        $folder[6][1] = $this->root . $category . '/items/administrator';
+        $folder[7][0] = 'views/site';
+        $folder[7][1] = $this->root . $category . '/views/site';
+        $folder[8][0] = 'views/administrator';
+        $folder[8][1] = $this->root . $category . '/views/administrator';
         foreach ($folder as $key => $value) {
             if (!JFolder::exists($value[1])) {
                 if (JFolder::create($value[1], 0755)) {
@@ -648,7 +659,7 @@ class AllEventsClassMD
             }
         }
     }
-
+	
     /**
      * @param string $lang
      */
