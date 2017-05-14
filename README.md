@@ -5,20 +5,8 @@
 
 This page to initiate a program to export Joomla's manifest documentation into Markdown format.
 
-For this time (20/04/2017) the program is (very) oriented to generate [AllEvents](https://www.allevents3.com) documentation.
-
-these directories must be created before...
-
-> $HOME/documentation/docs/MYCATEGORY
-
-> $HOME/documentation/docs/MYCATEGORY/views
-
-> $HOME/documentation/docs/MYCATEGORY/plugins
-
-> $HOME/documentation/docs/MYCATEGORY/modules
-
-> $HOME/documentation/docs/MYCATEGORY/items
+Demo : The [AllEvents](https://www.allevents3.com) documentation.
 
 In backend you must create a catagory (MYCATEGORY) to link componenent, modules, plugins...
 
-Any idea ? contact me at elecoest@gmail.com
+Any idea ? contact me at contact@allevents3.com
