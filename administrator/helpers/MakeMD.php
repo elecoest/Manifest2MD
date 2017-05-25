@@ -140,9 +140,9 @@ class AllEventsClassMD
                         }
                         // $sLine = '| ' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
                         if (!empty($field['default'])) {
-                            $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . (($field['type'] != "hidden") ? $str : '') . (empty($field['default']) ? '' : '(default:`' . JText::_($field['default']) . '`)') . '|';
+                            $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . (($field['type'] != "hidden") ? $str : '') . (empty($field['default']) ? '' : '(default:`' . JText::_($field['default']) . '`)') . '|';
                         } else {
-                            $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
+                            $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
                         }
 
                         $parameters .= $sLine . PHP_EOL;
@@ -165,7 +165,7 @@ class AllEventsClassMD
 
             // final writing
             $handle = fopen($filename, 'w');
-            fwrite($handle, $content);
+            fwrite($handle, htmlspecialchars($content));
             fclose($handle);
 
         }
@@ -250,7 +250,7 @@ class AllEventsClassMD
                     }
                 }
                 $default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
-                $sLine = '| &nbsp;' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . $default . '|';
+                $sLine = '|' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . $default . '|';
                 $parameters .= $sLine . PHP_EOL;
             }
         }
@@ -265,7 +265,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, $content);
+        fwrite($handle, htmlspecialchars($content));
         fclose($handle);
 
         return (JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
@@ -318,16 +318,16 @@ class AllEventsClassMD
         $filename = $this->root . $category . '/' . $extension . '.md';
         $handle = fopen($filename, 'w');
 
-        fwrite($handle, '# ' . $extension . ' Component' . PHP_EOL);
+        fwrite($handle, htmlspecialchars('# ' . $extension . ' Component' . PHP_EOL));
 
-        fwrite($handle, '## Modules' . PHP_EOL);
+        fwrite($handle, htmlspecialchars('## Modules' . PHP_EOL));
         foreach ($get_xml->modules->module as $module) {
-            fwrite($handle, '### ' . $module['name'] . PHP_EOL);
+            fwrite($handle, htmlspecialchars('### ' . $module['name'] . PHP_EOL));
         }
 
         fwrite($handle, '## Plugins' . PHP_EOL);
         foreach ($get_xml->plugins->plugin as $plugin) {
-            fwrite($handle, '### ' . $plugin['name'] . PHP_EOL);
+            fwrite($handle, htmlspecialchars('### ' . $plugin['name'] . PHP_EOL));
         }
         fclose($handle);
         return (JPATH_ROOT . '/administrator/components/' . $extension . '/' . $name . '.xml');
@@ -415,7 +415,7 @@ class AllEventsClassMD
                 }
                 $str = ($field['type'] != 'hidden') ? $str : '';
                 $default = (!empty($field['default'])) ? '(default:`' . JText::_($field['default']) . '`)' : '';
-                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+                $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
 
                 $parameters .= $sLine . PHP_EOL;
             }
@@ -436,7 +436,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, $content);
+        fwrite($handle, htmlspecialchars($content));
         fclose($handle);
 
         return $filename;
@@ -531,7 +531,7 @@ class AllEventsClassMD
                 }
                 $str = ($field['type'] != 'hidden') ? $str : '';
                 $default = (!empty($field['default'])) ? '(default:`' . JText::_($field['default']) . '`)' : '';
-                $sLine = '| &nbsp;' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+                $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
 
                 $parameters .= $sLine . PHP_EOL;
             }
@@ -552,7 +552,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, $content);
+        fwrite($handle, htmlspecialchars($content));
         fclose($handle);
 
         return $filename;
@@ -603,7 +603,7 @@ class AllEventsClassMD
 						}
 					}
 					$default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
-					$sLine = '| &nbsp;' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+					$sLine = '|' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
 					$parameters .= $sLine . PHP_EOL;
 				}
 			}
@@ -618,7 +618,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, $content);
+        fwrite($handle, htmlspecialchars($content));
         fclose($handle);
         return (JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
     }
