@@ -62,7 +62,7 @@ class AllEventsClassMD
      * @internal param mixed $entity
      * @internal param mixed $entities
      */
-    public function MakeMDView($category = "AllEvents", $extension, $subpath = "", $identifier="site")
+    public function MakeMDView($category = "AllEvents", $extension, $subpath = "", $identifier = "site")
     {
         $lang = JFactory::getLanguage();
         $lang->load($extension, JPATH_ADMINISTRATOR, $this->language, true);
@@ -117,13 +117,13 @@ class AllEventsClassMD
             $healthy = ["<![CDATA[", "]]>"];
             $yummy = ["", ""];
             $description = str_replace($healthy, $yummy, $description);
-            $description = JText::_($description);
+            $description = htmlspecialchars(JText::_($description));
 
             //parameters
             $parameters = "";
-            foreach ($get_xml->fields as $fieldset) {				
-			    if (($fieldset['name'] == 'request') || ($fieldset['name'] == 'params')) {
-                    $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
+            foreach ($get_xml->fields as $fieldset) {
+                if (($fieldset['name'] == 'request') || ($fieldset['name'] == 'params')) {
+                    $parameters .= '### ' . htmlspecialchars(JText::_($fieldset['name'])) . PHP_EOL;
                     $parameters .= '| Option | Description | Value |' . PHP_EOL;
                     $parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
 
@@ -132,17 +132,17 @@ class AllEventsClassMD
                         $str = "";
                         foreach ($field->option as $option) {
                             if ($first) {
-                                $str .= '`' . JText::_($option) . '`';
+                                $str .= '`' . htmlspecialchars(JText::_($option)) . '`';
                                 $first = false;
                             } else {
-                                $str .= ', `' . JText::_($option) . '`';
+                                $str .= ', `' . htmlspecialchars(JText::_($option)) . '`';
                             }
                         }
                         // $sLine = '| ' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
                         if (!empty($field['default'])) {
-                            $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . (($field['type'] != "hidden") ? $str : '') . (empty($field['default']) ? '' : '(default:`' . JText::_($field['default']) . '`)') . '|';
+                            $sLine = '|' . htmlspecialchars(JText::_(empty($field['label']) ? $field['name'] : $field['label'])) . ' | ' . htmlspecialchars(JText::_($field['description'])) . ' | ' . (($field['type'] != "hidden") ? $str : '') . (empty($field['default']) ? '' : '(default:`' . htmlspecialchars(JText::_($field['default'])) . '`)') . '|';
                         } else {
-                            $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . '|';
+                            $sLine = '|' . htmlspecialchars(JText::_(empty($field['label']) ? $field['name'] : $field['label'])) . ' | ' . htmlspecialchars(JText::_($field['description'])) . ' | ' . $str . '|';
                         }
 
                         $parameters .= $sLine . PHP_EOL;
@@ -165,7 +165,7 @@ class AllEventsClassMD
 
             // final writing
             $handle = fopen($filename, 'w');
-            fwrite($handle, htmlspecialchars($content));
+            fwrite($handle, $content);
             fclose($handle);
 
         }
@@ -231,8 +231,8 @@ class AllEventsClassMD
 
         //parameters
         $parameters = "";
-		$home = null ; 
-		$home = (empty($get_xml->fieldset)) ? $get_xml  : $get_xml->fieldset ; 
+        $home = null;
+        $home = (empty($get_xml->fieldset)) ? $get_xml : $get_xml->fieldset;
         foreach ($home as $fieldset) {
             $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
             $parameters .= '| Option | Description | Type | Value |' . PHP_EOL;
@@ -243,14 +243,14 @@ class AllEventsClassMD
                 $str = "";
                 foreach ($field->option as $option) {
                     if ($first) {
-                        $str .= '`' . JText::_($option) . '`';
+                        $str .= '`' . htmlspecialchars(JText::_($option)) . '`';
                         $first = false;
                     } else {
-                        $str .= ', `' . JText::_($option) . '`';
+                        $str .= ', `' . htmlspecialchars(JText::_($option)) . '`';
                     }
                 }
-                $default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
-                $sLine = '|' . (empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . JText::_($field['description']) . ' | ' . JText::_($field['type']) . ' | ' . $str . $default . '|';
+                $default = (isset($field['default'])) ? ' (default: `' . htmlspecialchars(JText::_($field['default'])) . '`)' : '';
+                $sLine = '|' . htmlspecialchars(empty(JText::_($field['label'])) ? JText::_($field['name']) : JText::_($field['label'])) . ' | ' . htmlspecialchars(JText::_($field['description'])) . ' | ' . htmlspecialchars(JText::_($field['type'])) . ' | ' . $str . $default . '|';
                 $parameters .= $sLine . PHP_EOL;
             }
         }
@@ -265,7 +265,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, htmlspecialchars($content));
+        fwrite($handle, $content);
         fclose($handle);
 
         return (JPATH_ROOT . '/administrator/components/' . $extension . '/models/forms/' . $object . '.xml');
@@ -392,13 +392,13 @@ class AllEventsClassMD
         $healthy = ["<![CDATA[", "]]>"];
         $yummy = ["", ""];
         $description = str_replace($healthy, $yummy, $description);
-        $description = JText::_($description);
+        $description = htmlspecialchars(JText::_($description));
 
         // parameters
         $parameters = '';
 
         foreach ($get_xml->config->fields->fieldset as $fieldset) {
-            $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
+            $parameters .= '### ' . htmlspecialchars(JText::_($fieldset['name'])) . PHP_EOL;
             $parameters .= '| Option | Description | Value |' . PHP_EOL;
             $parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
 
@@ -407,15 +407,15 @@ class AllEventsClassMD
                 $str = "";
                 foreach ($field->option as $option) {
                     if ($first) {
-                        $str .= '`' . JText::_($option) . '`';
+                        $str .= '`' . htmlspecialchars(JText::_($option)) . '`';
                         $first = false;
                     } else {
-                        $str .= ', `' . JText::_($option) . '`';
+                        $str .= ', `' . htmlspecialchars(JText::_($option)) . '`';
                     }
                 }
                 $str = ($field['type'] != 'hidden') ? $str : '';
-                $default = (!empty($field['default'])) ? '(default:`' . JText::_($field['default']) . '`)' : '';
-                $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+                $default = (!empty($field['default'])) ? '(default:`' . htmlspecialchars(JText::_($field['default'])) . '`)' : '';
+                $sLine = '|' . htmlspecialchars(JText::_(empty($field['label']) ? $field['name'] : $field['label'])) . ' | ' . htmlspecialchars(JText::_($field['description'])) . ' | ' . $str . $default . '|';
 
                 $parameters .= $sLine . PHP_EOL;
             }
@@ -436,7 +436,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, htmlspecialchars($content));
+        fwrite($handle, $content);
         fclose($handle);
 
         return $filename;
@@ -509,12 +509,12 @@ class AllEventsClassMD
         $healthy = ["<![CDATA[", "]]>"];
         $yummy = ["", ""];
         $description = str_replace($healthy, $yummy, $description);
-        $description = JText::_($description);
+        $description = htmlspecialchars(JText::_($description));
 
         // parameters
         $parameters = "";
         foreach ($get_xml->config->fields->fieldset as $fieldset) {
-            $parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
+            $parameters .= '### ' . htmlspecialchars(JText::_($fieldset['name'])) . PHP_EOL;
             $parameters .= '| Option | Description | Value |' . PHP_EOL;
             $parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
 
@@ -523,15 +523,15 @@ class AllEventsClassMD
                 $str = "";
                 foreach ($field->option as $option) {
                     if ($first) {
-                        $str .= '`' . JText::_($option) . '`';
+                        $str .= '`' . htmlspecialchars(JText::_($option)) . '`';
                         $first = false;
                     } else {
-                        $str .= ', `' . JText::_($option) . '`';
+                        $str .= ', `' . htmlspecialchars(JText::_($option)) . '`';
                     }
                 }
                 $str = ($field['type'] != 'hidden') ? $str : '';
-                $default = (!empty($field['default'])) ? '(default:`' . JText::_($field['default']) . '`)' : '';
-                $sLine = '|' . JText::_(empty($field['label']) ? $field['name'] : $field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
+                $default = (!empty($field['default'])) ? '(default:`' . htmlspecialchars(JText::_($field['default'])) . '`)' : '';
+                $sLine = '|' . htmlspecialchars(JText::_(empty($field['label']) ? $field['name'] : $field['label'])) . ' | ' . htmlspecialchars(JText::_($field['description'])) . ' | ' . $str . $default . '|';
 
                 $parameters .= $sLine . PHP_EOL;
             }
@@ -552,7 +552,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, htmlspecialchars($content));
+        fwrite($handle, $content);
         fclose($handle);
 
         return $filename;
@@ -574,40 +574,41 @@ class AllEventsClassMD
         $get_xml = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
         $filename = $this->root . $category . '/config_' . $extension . '.md';
 
-		$parameters = "" ; 
-		foreach ($get_xml->fieldset as $fieldset) {			
-			// parameters
-			$parameters .= '### ' . JText::_($fieldset['name']) . PHP_EOL;
-			$parameters .= '| Option | Description | Value |' . PHP_EOL;
-			$parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
-	
-			foreach ($fieldset->field as $field) {
-				if ($field['type'] == 'rules') {
-					$get_rules = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/access.xml');
-					$parameters .= '## ' . JText::_($field['label']) . ' ...' . PHP_EOL;
-					$parameters .= '| Action | Description |' . PHP_EOL;
-					$parameters .= '| ------ | ----------- |' . PHP_EOL;
-					foreach ($get_rules->section->action as $action) {
-						$sLine = ' | ' . JText::_($action['title']) . ' | ' . JText::_($action['description']) . ' | ';
-						$parameters .= $sLine . PHP_EOL;
-					}
-				} else {
-					$first = true;
-					$str = "";
-					foreach ($field->option as $option) {
-						if ($first) {
-							$str .= '`' . JText::_($option) . '`';
-							$first = false;
-						} else {
-							$str .= ', `' . JText::_($option) . '`';
-						}
-					}
-					$default = (isset($field['default'])) ? ' (default: `' . JText::_($field['default']) . '`)' : '';
-					$sLine = '|' . JText::_($field['label']) . ' | ' . JText::_($field['description']) . ' | ' . $str . $default . '|';
-					$parameters .= $sLine . PHP_EOL;
-				}
-			}
-		}
+        $parameters = "";
+        foreach ($get_xml->fieldset as $fieldset) {
+            // parameters
+            $parameters .= '### ' . htmlspecialchars(JText::_($fieldset['name'])) . PHP_EOL;
+            $parameters .= '| Option | Description | Value |' . PHP_EOL;
+            $parameters .= '| ------ | ----------- | ----- |' . PHP_EOL;
+
+            foreach ($fieldset->field as $field) {
+                if ($field['type'] == 'rules') {
+                    $get_rules = simplexml_load_file(JPATH_ROOT . '/administrator/components/' . $extension . '/access.xml');
+                    $parameters .= '## ' . htmlspecialchars(JText::_($field['label'])) . ' ...' . PHP_EOL;
+                    $parameters .= '| Action | Description |' . PHP_EOL;
+                    $parameters .= '| ------ | ----------- |' . PHP_EOL;
+                    foreach ($get_rules->section->action as $action) {
+                        $sLine = ' | ' . htmlspecialchars(JText::_($action['title'])) . ' | ' . htmlspecialchars(JText::_($action['description'])) . ' | ';
+                        $parameters .= $sLine . PHP_EOL;
+                    }
+                } else {
+                    $first = true;
+                    $str = "";
+                    foreach ($field->option as $option) {
+                        if ($first) {
+                            $str .= '`' . htmlspecialchars(JText::_($option)) . '`';
+                            $first = false;
+                        } else {
+                            $str .= ', `' . htmlspecialchars(JText::_($option)) . '`';
+                        }
+                    }
+                    $default = (isset($field['default'])) ? ' (default: `' . htmlspecialchars(JText::_($field['default'])) . '`)' : '';
+                    $pro = (isset($field['premium']) && ($field['premium'] == "1")) ? '&nbsp;<span class="label label-warning">PRO</span>' : '';
+                    $sLine = '|' . htmlspecialchars(JText::_($field['label'])) . $pro . ' | ' . htmlspecialchars(JText::_($field['description'])) . ' | ' . $str . $default . ' | ';
+                    $parameters .= $sLine . PHP_EOL;
+                }
+            }
+        }
         $content = $this->params['template_config'];
 
         // merge
@@ -618,7 +619,7 @@ class AllEventsClassMD
 
         // final writing
         $handle = fopen($filename, 'w');
-        fwrite($handle, htmlspecialchars($content));
+        fwrite($handle, $content);
         fclose($handle);
         return (JPATH_ROOT . '/administrator/components/' . $extension . '/config.xml');
     }
@@ -659,7 +660,7 @@ class AllEventsClassMD
             }
         }
     }
-	
+
     /**
      * @param string $lang
      */
